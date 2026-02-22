@@ -150,7 +150,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
         }
     }
 
-    // --- 3. РУХ ПО X ТА КОЛІЗІЯ ---
+    
     p->x += p->dx; 
     if (checkCollision(p, level)) {
         // Якщо врізалися - відштовхуємось назад
