@@ -1,5 +1,4 @@
 #include "player.h"
-#include <level.h>
 
 void initPlayer(Player *p, float spawnX, float spawnY) {
     p->width = 32;
@@ -84,26 +83,6 @@ int checkDeath(Player *p, Level *level) {
     return 0;
 }
 
-// Функция для сохранения результата в локальную "Базу Данных" (текстовый файл)
-void saveScore(int level, float time, int deaths) {
-    // Открываем файл в режиме "a" (append - добавление в конец).
-    // Если файла нет, C создаст его автоматически.
-    FILE *file = fopen("resource/leaderboard.txt", "a");
-    
-    if (file == NULL) {
-        printf("Ошибка: не удалось открыть базу данных для записи!\n");
-        return;
-    }
-
-    // Записываем данные в удобном формате
-    fprintf(file, "Level: %d | Time: %.2f sec | Deaths: %d\n", level, time, deaths);
-    
-    // Обязательно закрываем файл, чтобы данные сохранились на диск
-    fclose(file);
-    
-    printf("Результат успешно сохранен в локальную БД!\n");
-}
-
 void updatePlayer(Player *p, Level *level, App *app) {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
@@ -181,29 +160,29 @@ void updatePlayer(Player *p, Level *level, App *app) {
 
     // --- 6. ПЕРЕВІРКА ПЕРЕМОГИ ---
     if (checkWin(p, level)) {
-        float levelTimeSeconds = (SDL_GetTicks() - app->levelStartTime) / 1000.0f;
-        
-        printf("[ПЕРЕМОГА!] Рівень %d пройдено!\n", app->currentLevel);
-        printf(" -> Час проходження: %.2f секунд\n", levelTimeSeconds);
-        printf(" -> Загальна кількість смертей: %d\n", app->deathCount);
-        
-        // ВЫЗЫВАЕМ НАШУ ФУНКЦИЮ СОХРАНЕНИЯ!
-        saveScore(app->currentLevel, levelTimeSeconds, app->deathCount);
-
         app->currentLevel++; // Збільшуємо номер рівня
         
         // ПЕРЕВІРКА НА ФІНАЛ ГРИ
         if (app->currentLevel > 3) {
-            // Якщо ми щойно пройшли 3-й рівень, гра закінчена!
+            // ЗБЕРІГАЄМО ЧАС У СТРУКТУРУ APP:
+            app->finalTime = (SDL_GetTicks() - app->gameStartTime) / 1000.0f;
+            
+            printf("[ФІНАЛ] Гру пройдено повністю!\n");
+            printf(" -> Загальний час: %.2f секунд\n", app->finalTime);
+            
+            if (app->winSound) {
+                Mix_PlayChannel(-1, app->winSound, 0);
+            }
+
             app->state = STATE_VICTORY;
         } else {
-            // Інакше — завантажуємо наступний рівень 
-            initLevel(level, app->currentLevel); 
+            // Інакше — просто завантажуємо наступний рівень 
+            printf("Рівень пройдено! Переходимо на рівень %d\n", app->currentLevel);
+            initLevel(level, app->currentLevel);
             initPlayer(p, level->spawnX, level->spawnY);      
             
-            // Скидаємо лічильник смертей для нового рівня і оновлюємо таймер
-            app->deathCount = 0;
-            app->levelStartTime = SDL_GetTicks(); 
+            // ВАЖЛИВО: Ми більше НЕ скидаємо app->deathCount 
+            // і НЕ оновлюємо таймер! Час продовжує йти.
         }
     }
 }

@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -27,8 +29,16 @@ typedef struct {
     int             currentLevel;
     int             gameOverAlpha;
     int             deathCount;
-    Uint32          levelStartTime;
+  
+    Uint32          gameStartTime;
+  
     Mix_Music       *menuMusic;
+    Mix_Chunk       *winSound;
+
+    float           finalTime;     // Щоб зберегти фінальний час
+    TTF_Font        *font;         // Наш шрифт
+
+    SDL_Texture     *victoryBg;
 } App;
 
 #endif

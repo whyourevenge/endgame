@@ -49,6 +49,27 @@ bool initApp(App *app) {
             Mix_VolumeMusic(8);
             Mix_PlayMusic(app->menuMusic, -1);
         }
+
+        app->winSound = Mix_LoadWAV("resource/audio/victory.wav");
+        Mix_VolumeChunk(app->winSound, 24);
+        if (!app->winSound) {
+            printf("Не удалось загрузить звук победы: %s\n", Mix_GetError());
+        }
+    }
+
+    app->victoryBg = IMG_LoadTexture(app->renderer, "resource/images/victory_bg.png");
+    if (!app->victoryBg) {
+        printf("Не удалось загрузить фон победы: %s\n", IMG_GetError());
+    }
+
+    if (TTF_Init() == -1) {
+        printf("Помилка ініціалізації SDL_ttf: %s\n", TTF_GetError());
+        return false;
+    }
+    // ВАЖЛИВО: Тобі треба буде закинути будь-який файл шрифту (.ttf) у папку resource!
+    app->font = TTF_OpenFont("resource/Jersey10-Regular.ttf", 64); // 48 - це розмір шрифту
+    if (!app->font) {
+        printf("Не вдалося завантажити шрифт: %s\n", TTF_GetError());
     }
 
     app->isRunning = true;
@@ -85,11 +106,20 @@ void handleEvents(App *app) {
 
 // Freeing resources
 void cleanupApp(App *app) {
+    if (app->victoryBg) {
+        SDL_DestroyTexture(app->victoryBg);
+    }
+
     if (app->menuMusic) {
         Mix_FreeMusic(app->menuMusic);
     }
-
+    if (app->winSound) {
+        Mix_FreeChunk(app->winSound);
+    }
     Mix_CloseAudio();
+
+    if (app->font) TTF_CloseFont(app->font);
+    TTF_Quit();
 
     if (app->renderer) {
         SDL_DestroyRenderer(app->renderer);
@@ -219,8 +249,55 @@ int main(void) {
                 SDL_RenderClear(app.renderer);
                 break;
             case STATE_VICTORY:
-                SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
-                SDL_RenderClear(app.renderer);
+                // 1. РИСУЕМ ФОНОВУЮ КАРТИНКУ
+                if (app.victoryBg != NULL) {
+                    SDL_RenderCopy(app.renderer, app.victoryBg, NULL, NULL);
+                } else {
+                    // Запасной план, если картинка не загрузилась
+                    SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
+                    SDL_RenderClear(app.renderer);
+                }
+
+                // 2. РИСУЕМ ТЕКСТЫ
+                if (app.font != NULL) {
+                    // --- ГЛАВНЫЙ ТЕКСТ (Время и Смерти) ---
+                    char timeText[128];
+                    sprintf(timeText, "VICTORY! Time: %.2f sec | Deaths: %d", app.finalTime, app.deathCount);
+
+                    SDL_Color whiteColor = {255, 255, 255, 255}; // Белый текст лучше видно на картинках
+                    SDL_Surface *surf1 = TTF_RenderUTF8_Blended(app.font, timeText, whiteColor);
+                    SDL_Texture *tex1 = SDL_CreateTextureFromSurface(app.renderer, surf1);
+
+                    // Центрируем и поднимаем чуть ВЫШЕ середины экрана
+                    SDL_Rect rect1 = { 
+                        (WINDOW_WIDTH - surf1->w) / 2, 
+                        (WINDOW_HEIGHT / 2) - surf1->h, 
+                        surf1->w, 
+                        surf1->h 
+                    };
+                    SDL_RenderCopy(app.renderer, tex1, NULL, &rect1);
+
+                    // --- ТЕКСТ-ИНСТРУКЦИЯ ---
+                    const char *hintText = "Press [ENTER] to return to Main Menu";
+                    SDL_Color grayColor = {200, 200, 200, 255}; // Слегка серый цвет для второстепенного текста
+                    SDL_Surface *surf2 = TTF_RenderUTF8_Blended(app.font, hintText, grayColor);
+                    SDL_Texture *tex2 = SDL_CreateTextureFromSurface(app.renderer, surf2);
+
+                    // Центрируем и опускаем чуть НИЖЕ середины экрана
+                    SDL_Rect rect2 = { 
+                        (WINDOW_WIDTH - surf2->w) / 2, 
+                        (WINDOW_HEIGHT / 2) + 20, 
+                        surf2->w, 
+                        surf2->h 
+                    };
+                    SDL_RenderCopy(app.renderer, tex2, NULL, &rect2);
+
+                    // Очищаем память от поверхностей и текстур текста
+                    SDL_FreeSurface(surf1);
+                    SDL_DestroyTexture(tex1);
+                    SDL_FreeSurface(surf2);
+                    SDL_DestroyTexture(tex2);
+                }
                 break;
         }
 
