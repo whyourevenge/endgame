@@ -2,6 +2,7 @@
 #define ENDGAME_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -23,9 +24,10 @@ typedef struct {
     GameState       state;
     int             currentLevel;
 
-    // --- СТАТИСТИКА ---
     int             deathCount;
     Uint32          levelStartTime;
+
+    Mix_Music       *menuMusic;
 } App;
 
 #endif

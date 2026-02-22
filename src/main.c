@@ -34,6 +34,22 @@ bool initApp(App *app) {
         return false;
     }
 
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("Ошибка инициализации SDL_mixer: %s\n", Mix_GetError());
+        // Мы не возвращаем false, чтобы игра работала даже если нет колонок
+    } else {
+        // Загружаем нашу музыку
+        app->menuMusic = Mix_LoadMUS("resource/audio/main-menu-music.ogg");
+        if (!app->menuMusic) {
+            printf("Не удалось загрузить музыку: %s\n", Mix_GetError());
+        } else {
+            // Включаем музыку! 
+            // -1 означает "повторять бесконечно" (зациклить)
+            Mix_VolumeMusic(8);
+            Mix_PlayMusic(app->menuMusic, -1);
+        }
+    }
+
     app->isRunning = true;
     return true;
 }
@@ -54,6 +70,12 @@ void handleEvents(App *app) {
 
 // Freeing resources
 void cleanupApp(App *app) {
+    if (app->menuMusic) {
+        Mix_FreeMusic(app->menuMusic);
+    }
+
+    Mix_CloseAudio();
+
     if (app->renderer) {
         SDL_DestroyRenderer(app->renderer);
     }
@@ -90,6 +112,14 @@ int main(void) {
                 break;
             case STATE_PLAY:
                 updatePlayer(&player, &level, &app); // Передаємо &app
+
+                if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
+                    app.state = STATE_MENU;
+                    
+                    // --- ВКЛЮЧАЕМ МУЗЫКУ ОБРАТНО ---
+                    // Здесь app - это обычная структура, поэтому используем точку (.)
+                    Mix_PlayMusic(app.menuMusic, -1); 
+                }
                 break;
             case STATE_GAMEOVER:
                 updateGameOver(&app, &player);
@@ -106,6 +136,7 @@ int main(void) {
                     SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
                     app.state = STATE_MENU;
                     app.currentLevel = 1; // Скидаємо прогрес, щоб можна було почати заново
+                    Mix_PlayMusic(app.menuMusic, -1);
                 }
                 break;
         }

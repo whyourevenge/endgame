@@ -23,6 +23,7 @@ void updateMenu(App *app) {
     // Якщо клікнули лівою кнопкою
     if (isLeftClicked) {
         if (isMouseInside(mx, my, btnPlay)) {
+            Mix_HaltMusic();
             app->state = STATE_PLAY; // Запускаємо гру!
 
             // --- СКИДАЄМО СТАТИСТИКУ ПРИ НОВІЙ ГРІ ---
@@ -78,6 +79,7 @@ void updateGameOver(App *app, Player *player) {
     if (keys[SDL_SCANCODE_ESCAPE]) {
         initPlayer(player);
         app->state = STATE_MENU;
+        Mix_PlayMusic(app->menuMusic, -1);
     }
 }
 
