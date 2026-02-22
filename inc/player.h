@@ -18,6 +18,7 @@ typedef struct {
     float dx, dy;
     int width, height;
     GravityDir gravDir;
+    Uint32 spawnTime;
 } Player;
 
 void initPlayer(Player *p);

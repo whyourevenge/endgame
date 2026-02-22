@@ -9,6 +9,7 @@ void initPlayer(Player *p) {
     p->dx = 0.0f;
     p->dy = 0.0f;
     p->gravDir = GRAV_DOWN; 
+    p->spawnTime = SDL_GetTicks();
 }
 
 // Допоміжна функція для колізії (AABB проти Тайл-мапи)
@@ -110,10 +111,17 @@ void updatePlayer(Player *p, Level *level, App *app) {
     float walkSpeed = 6.0f;    
 
     // --- 1. КЕРУВАННЯ ВЕКТОРОМ ГРАВІТАЦІЇ ---
-    if (keys[SDL_SCANCODE_UP])    p->gravDir = GRAV_UP;
-    if (keys[SDL_SCANCODE_DOWN])  p->gravDir = GRAV_DOWN;
-    if (keys[SDL_SCANCODE_LEFT])  p->gravDir = GRAV_LEFT;
-    if (keys[SDL_SCANCODE_RIGHT]) p->gravDir = GRAV_RIGHT;
+    Uint32 currentTime = SDL_GetTicks();
+    Uint32 spawnDelay = 1000; // Задержка в миллисекундах (1000 = 1 секунда). Можешь поставить 500.
+
+    // Разрешаем менять гравитацию ТОЛЬКО если прошла 1 секунда после старта уровня
+    if (currentTime - p->spawnTime >= spawnDelay) {
+        if (keys[SDL_SCANCODE_UP])    p->gravDir = GRAV_UP;
+        if (keys[SDL_SCANCODE_DOWN])  p->gravDir = GRAV_DOWN;
+        if (keys[SDL_SCANCODE_LEFT])  p->gravDir = GRAV_LEFT;
+        if (keys[SDL_SCANCODE_RIGHT]) p->gravDir = GRAV_RIGHT;
+    }
+
 
     // --- 2. РОЗРАХУНОК ШВИДКОСТІ (DX та DY) ---
     if (p->gravDir == GRAV_DOWN || p->gravDir == GRAV_UP) {
