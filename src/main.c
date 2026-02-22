@@ -103,7 +103,16 @@ int main(void) {
 
     initPlayer(&player, level.spawnX, level.spawnY);
 
+    // --- ПЕРМІННІ ДЛЯ ЛІМІТУ FPS (ХОТФИКС) ---
+    const int FPS = 60;
+    const int frameDelay = 1000 / FPS; // Скільки мілісекунд має тривати 1 кадр (~16 мс)
+    Uint32 frameStart;
+    int frameTime;
+
+
     while (app.isRunning) {
+        frameStart = SDL_GetTicks();
+
         handleEvents(&app);
 
         // --- ЛОГІКА (UPDATE) ЗАЛЕЖНО ВІД СТАНУ ---
@@ -164,13 +173,18 @@ int main(void) {
                 SDL_RenderClear(app.renderer);
                 break;
             case STATE_VICTORY:
-                // Золотий колір для екрану перемоги (R:255, G:215, B:0)
                 SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
                 SDL_RenderClear(app.renderer);
                 break;
         }
 
         SDL_RenderPresent(app.renderer);
+
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
 
     cleanupApp(&app);

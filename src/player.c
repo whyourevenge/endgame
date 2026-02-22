@@ -4,12 +4,13 @@
 void initPlayer(Player *p, float spawnX, float spawnY) {
     p->width = 32;
     p->height = 32;
-    // Ставимо його на безпечне місце (там де в нашому масиві нулі)
     p->x = spawnX;
     p->y = spawnY;
+
     p->dx = 0.0f;
     p->dy = 0.0f;
     p->gravDir = GRAV_DOWN; 
+    p->spawnTime = SDL_GetTicks();
 }
 
 // Допоміжна функція для колізії (AABB проти Тайл-мапи)
@@ -110,13 +111,20 @@ void updatePlayer(Player *p, Level *level, App *app) {
     float maxFallSpeed = 12.0f; 
     float walkSpeed = 6.0f;    
 
-    // --- 1. КЕРУВАННЯ ВЕКТОРОМ ГРАВІТАЦІЇ ---
-    if (keys[SDL_SCANCODE_UP])    p->gravDir = GRAV_UP;
-    if (keys[SDL_SCANCODE_DOWN])  p->gravDir = GRAV_DOWN;
-    if (keys[SDL_SCANCODE_LEFT])  p->gravDir = GRAV_LEFT;
-    if (keys[SDL_SCANCODE_RIGHT]) p->gravDir = GRAV_RIGHT;
+    
+    Uint32 currentTime = SDL_GetTicks();
+    Uint32 spawnDelay = 1000; // Задержка в миллисекундах (1000 = 1 секунда). Можешь поставить 500.
 
-    // --- 2. РОЗРАХУНОК ШВИДКОСТІ (DX та DY) ---
+    // Разрешаем менять гравитацию ТОЛЬКО если прошла 1 секунда после старта уровня
+    if (currentTime - p->spawnTime >= spawnDelay) {
+        if (keys[SDL_SCANCODE_UP])    p->gravDir = GRAV_UP;
+        if (keys[SDL_SCANCODE_DOWN])  p->gravDir = GRAV_DOWN;
+        if (keys[SDL_SCANCODE_LEFT])  p->gravDir = GRAV_LEFT;
+        if (keys[SDL_SCANCODE_RIGHT]) p->gravDir = GRAV_RIGHT;
+    }
+
+
+
     if (p->gravDir == GRAV_DOWN || p->gravDir == GRAV_UP) {
         p->dx = 0.0f;
         if (keys[SDL_SCANCODE_A]) p->dx = -walkSpeed;
@@ -143,7 +151,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
         }
     }
 
-    // --- 3. РУХ ПО X ТА КОЛІЗІЯ ---
+    
     p->x += p->dx; 
     if (checkCollision(p, level)) {
         // Якщо врізалися - відштовхуємось назад
