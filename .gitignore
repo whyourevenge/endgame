@@ -28,6 +28,8 @@ obj/
 out/
 Release/
 Debug/
+resource/leaderboard.txt
+endgame
 
 # CMake files (if you use it for building)
 CMakeCache.txt
