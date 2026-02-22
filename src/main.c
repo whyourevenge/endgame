@@ -153,7 +153,7 @@ void resetGame(App *app, Level *level, Player *player) {
     app->currentLevel = 1;
 
     app->deathCount = 0;
-    app->levelStartTime = SDL_GetTicks();
+    app->gameStartTime = SDL_GetTicks();
 
     initLevel(level, app->currentLevel);
 
