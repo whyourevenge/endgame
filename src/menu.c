@@ -88,8 +88,6 @@ void renderGameOver(App *app) {
     SDL_SetRenderDrawColor(app->renderer, 100, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
-    // Тут ми малюємо якийсь елемент по центру, щоб показати що це Game Over
-    // Наприклад, великий чорний квадрат (потім замінимо на текст "YOU DIED")
     SDL_Rect deadRect = { 1280/2 - 150, 768/2 - 50, 300, 100 };
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderFillRect(app->renderer, &deadRect);
