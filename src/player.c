@@ -5,7 +5,7 @@ void initPlayer(Player *p) {
     p->height = 32;
     // Ставимо його на безпечне місце (там де в нашому масиві нулі)
     p->x = 200.0f;
-    p->y = 200.0f;
+    p->y = 250.0f;
     p->dx = 0.0f;
     p->dy = 0.0f;
     p->gravDir = GRAV_DOWN; 
