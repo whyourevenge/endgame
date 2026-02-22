@@ -1,0 +1,13 @@
+#ifndef MENU_H
+#define MENU_H
+
+#include "endgame.h"
+#include "player.h"
+
+void updateMenu(App *app);
+void renderMenu(App *app);
+
+void updateGameOver(App *app, Player *player);
+void renderGameOver(App *app);
+
+#endif

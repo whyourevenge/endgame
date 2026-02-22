@@ -1,0 +1,87 @@
+#include <SDL2/SDL.h>
+#include "endgame.h"
+#include "menu.h"
+#include "player.h"
+
+// Допоміжна функція: перевіряє, чи мишка знаходиться всередині прямокутника
+bool isMouseInside(int mouseX, int mouseY, SDL_Rect rect) {
+    return (mouseX >= rect.x && mouseX <= rect.x + rect.w &&
+            mouseY >= rect.y && mouseY <= rect.y + rect.h);
+}
+
+// --- ГОЛОВНЕ МЕНЮ ---
+void updateMenu(App *app) {
+    int mx, my;
+    Uint32 mouseState = SDL_GetMouseState(&mx, &my);
+    bool isLeftClicked = (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
+
+    // Розміри і позиції наших кнопок (по центру екрану)
+    SDL_Rect btnPlay     = { 1280/2 - 100, 250, 200, 60 };
+    SDL_Rect btnSettings = { 1280/2 - 100, 350, 200, 60 };
+    SDL_Rect btnExit     = { 1280/2 - 100, 450, 200, 60 };
+
+    // Якщо клікнули лівою кнопкою
+    if (isLeftClicked) {
+        if (isMouseInside(mx, my, btnPlay)) {
+            app->state = STATE_PLAY; // Запускаємо гру!
+        }
+        else if (isMouseInside(mx, my, btnSettings)) {
+            app->state = STATE_SETTINGS; // Переходимо в налаштування
+        }
+        else if (isMouseInside(mx, my, btnExit)) {
+            app->isRunning = false; // Виходимо з гри
+        }
+    }
+}
+
+void renderMenu(App *app) {
+    int mx, my;
+    SDL_GetMouseState(&mx, &my);
+
+    SDL_Rect btnPlay     = { 1280/2 - 100, 250, 200, 60 };
+    SDL_Rect btnSettings = { 1280/2 - 100, 350, 200, 60 };
+    SDL_Rect btnExit     = { 1280/2 - 100, 450, 200, 60 };
+
+    // Малюємо кнопку PLAY (Зелена). Якщо мишка на ній - робимо яскравішою
+    if (isMouseInside(mx, my, btnPlay)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
+    else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
+    SDL_RenderFillRect(app->renderer, &btnPlay);
+
+    // Малюємо кнопку SETTINGS (Жовта)
+    if (isMouseInside(mx, my, btnSettings)) SDL_SetRenderDrawColor(app->renderer, 255, 255, 100, 255);
+    else SDL_SetRenderDrawColor(app->renderer, 200, 200, 50, 255);
+    SDL_RenderFillRect(app->renderer, &btnSettings);
+
+    // Малюємо кнопку EXIT (Червона)
+    if (isMouseInside(mx, my, btnExit)) SDL_SetRenderDrawColor(app->renderer, 255, 100, 100, 255);
+    else SDL_SetRenderDrawColor(app->renderer, 200, 50, 50, 255);
+    SDL_RenderFillRect(app->renderer, &btnExit);
+}
+
+// --- ЕКРАН GAME OVER ---
+void updateGameOver(App *app, Player *player) {
+    const Uint8 *keys = SDL_GetKeyboardState(NULL);
+    
+    // Чекаємо натискання ENTER (Return) для рестарту
+    if (keys[SDL_SCANCODE_RETURN]) {
+        initPlayer(player);
+        app->state = STATE_PLAY;
+    }
+    // Або ESC, щоб вийти в головне меню
+    if (keys[SDL_SCANCODE_ESCAPE]) {
+        initPlayer(player);
+        app->state = STATE_MENU;
+    }
+}
+
+void renderGameOver(App *app) {
+    // Екран смерті буде темно-червоним
+    SDL_SetRenderDrawColor(app->renderer, 100, 0, 0, 255);
+    SDL_RenderClear(app->renderer);
+
+    // Тут ми малюємо якийсь елемент по центру, щоб показати що це Game Over
+    // Наприклад, великий чорний квадрат (потім замінимо на текст "YOU DIED")
+    SDL_Rect deadRect = { 1280/2 - 150, 768/2 - 50, 300, 100 };
+    SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
+    SDL_RenderFillRect(app->renderer, &deadRect);
+}

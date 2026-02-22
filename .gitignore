@@ -1,55 +1,72 @@
-# Prerequisites
-*.d
-
-# Object files
+# ==============================
+# Build and Compilation
+# ==============================
+# Object files and dependencies
 *.o
-*.ko
-*.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
-
-# Precompiled Headers
+*.d
 *.gch
-*.pch
 
 # Libraries
-*.lib
 *.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
 *.so
 *.so.*
+*.dll
 *.dylib
 
 # Executables
-*.exe
 *.out
+*.exe
 *.app
-*.i*86
-*.x86_64
-*.hex
+# IMPORTANT: Uncomment the line below and enter the name of your executable, 
+# if you are compiling directly into the project root (e.g., game)
+# game
 
-# Debug files
+# Build directories (it is recommended to build the project in these)
+build/
+bin/
+obj/
+out/
+Release/
+Debug/
+
+# CMake files (if you use it for building)
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+Makefile
+cmake_install.cmake
+
+# ==============================
+# IDE and Code Editors
+# ==============================
+# VS Code
+.vscode/
+
+# CLion / IntelliJ
+.idea/
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# Language Server Protocol (LSP) configuration files
+.ccls-cache/
+.clangd/
+compile_commands.json
+
+# ==============================
+# Logs and Debugging
+# ==============================
+core
+vgcore.*
+*.log
+*.crash
 *.dSYM/
-*.su
-*.idb
-*.pdb
 
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
-
-# debug information files
-*.dwo
+# ==============================
+# System Files 
+# (in case someone clones the project on Mac or Windows)
+# ==============================
+.DS_Store
+Thumbs.db
