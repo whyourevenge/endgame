@@ -31,6 +31,11 @@ typedef struct {
 
     Mix_Music       *menuMusic;
     Mix_Chunk       *winSound;
+    
+    
+    Mix_Music       *level1Music;
+    Mix_Music       *level2Music;
+    Mix_Music       *level3Music;
 
     float           finalTime;     // Щоб зберегти фінальний час
     TTF_Font        *font;         // Наш шрифт

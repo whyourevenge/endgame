@@ -45,10 +45,21 @@ bool initApp(App *app) {
         } else {
             // Включаем музыку! 
             // -1 означает "повторять бесконечно" (зациклить)
-            Mix_VolumeMusic(8);
+            Mix_VolumeMusic(24);
             Mix_PlayMusic(app->menuMusic, -1);
         }
-
+        
+        
+        
+        // ЗАГРУЗКА МУЗЫКИ УРОВНЕЙ
+        app->level1Music = Mix_LoadMUS("resource/audio/level1.ogg");
+        app->level2Music = Mix_LoadMUS("resource/audio/level2.ogg");
+        app->level3Music = Mix_LoadMUS("resource/audio/level3.ogg");
+    
+    // Небольшая проверка, чтобы в консоли было видно, если файл потерялся
+        if (!app->level1Music || !app->level2Music || !app->level3Music) {
+            printf("Внимание: Не удалось загрузить музыку для одного из уровней: %s\n",        Mix_GetError());
+        } 
         app->winSound = Mix_LoadWAV("resource/audio/victory.wav");
         Mix_VolumeChunk(app->winSound, 24);
         if (!app->winSound) {
@@ -101,6 +112,13 @@ void cleanupApp(App *app) {
     if (app->winSound) {
         Mix_FreeChunk(app->winSound);
     }
+    
+    
+    if (app->level1Music) Mix_FreeMusic(app->level1Music);
+    if (app->level2Music) Mix_FreeMusic(app->level2Music);
+    if (app->level3Music) Mix_FreeMusic(app->level3Music);
+    
+    
     Mix_CloseAudio();
 
     if (app->font) TTF_CloseFont(app->font);
