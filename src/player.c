@@ -169,14 +169,16 @@ void updatePlayer(Player *p, Level *level, App *app) {
         
         // ПЕРЕВІРКА НА ФІНАЛ ГРИ
         if (app->currentLevel > 3) {
-            // Якщо ми щойно пройшли останній (3-й) рівень, гра закінчена!
-            // Рахуємо загальний час від початку гри:
-            float totalTimeSeconds = (SDL_GetTicks() - app->gameStartTime) / 1000.0f;
+            // ЗБЕРІГАЄМО ЧАС У СТРУКТУРУ APP:
+            app->finalTime = (SDL_GetTicks() - app->gameStartTime) / 1000.0f;
             
             printf("[ФІНАЛ] Гру пройдено повністю!\n");
-            printf(" -> Загальний час: %.2f секунд\n", totalTimeSeconds);
-            printf(" -> Загальна кількість смертей: %d\n", app->deathCount);
+            printf(" -> Загальний час: %.2f секунд\n", app->finalTime);
             
+            if (app->winSound) {
+                Mix_PlayChannel(-1, app->winSound, 0); 
+            }
+
             app->state = STATE_VICTORY;
         } else {
             // Інакше — просто завантажуємо наступний рівень 

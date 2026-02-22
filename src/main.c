@@ -48,6 +48,22 @@ bool initApp(App *app) {
             Mix_VolumeMusic(8);
             Mix_PlayMusic(app->menuMusic, -1);
         }
+
+        app->winSound = Mix_LoadWAV("resource/audio/victory.wav");
+        Mix_VolumeChunk(app->winSound, 24);
+        if (!app->winSound) {
+            printf("Не удалось загрузить звук победы: %s\n", Mix_GetError());
+        }
+    }
+
+    if (TTF_Init() == -1) {
+        printf("Помилка ініціалізації SDL_ttf: %s\n", TTF_GetError());
+        return false;
+    }
+    // ВАЖЛИВО: Тобі треба буде закинути будь-який файл шрифту (.ttf) у папку resource!
+    app->font = TTF_OpenFont("resource/Jersey10-Regular.ttf", 48); // 48 - це розмір шрифту
+    if (!app->font) {
+        printf("Не вдалося завантажити шрифт: %s\n", TTF_GetError());
     }
 
     app->isRunning = true;
@@ -73,8 +89,13 @@ void cleanupApp(App *app) {
     if (app->menuMusic) {
         Mix_FreeMusic(app->menuMusic);
     }
-
+    if (app->winSound) {
+        Mix_FreeChunk(app->winSound);
+    }
     Mix_CloseAudio();
+
+    if (app->font) TTF_CloseFont(app->font);
+    TTF_Quit();
 
     if (app->renderer) {
         SDL_DestroyRenderer(app->renderer);
@@ -173,8 +194,33 @@ int main(void) {
                 SDL_RenderClear(app.renderer);
                 break;
             case STATE_VICTORY:
+                // Золотий фон
                 SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
                 SDL_RenderClear(app.renderer);
+
+                if (app.font != NULL) {
+                    char timeText[64];
+                    // Формуємо рядок тексту з нашим часом
+                    sprintf(timeText, "VICTORY! Your time: %.2f sec", app.finalTime);
+
+                    SDL_Color textColor = {0, 0, 0, 255}; // Чорний текст
+                    SDL_Surface *textSurface = TTF_RenderUTF8_Blended(app.font, timeText, textColor);
+                    SDL_Texture *textTexture = SDL_CreateTextureFromSurface(app.renderer, textSurface);
+
+                    // Центруємо текст на екрані
+                    SDL_Rect textRect = { 
+                        (WINDOW_WIDTH - textSurface->w) / 2, 
+                        (WINDOW_HEIGHT - textSurface->h) / 2, 
+                        textSurface->w, 
+                        textSurface->h 
+                    };
+
+                    SDL_RenderCopy(app.renderer, textTexture, NULL, &textRect);
+
+                    // Очищаємо пам'ять кадру
+                    SDL_FreeSurface(textSurface);
+                    SDL_DestroyTexture(textTexture);
+                }
                 break;
         }
 
