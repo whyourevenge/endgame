@@ -21,7 +21,7 @@ typedef struct {
     Uint32 spawnTime;
 } Player;
 
-void initPlayer(Player *p);
+void initPlayer(Player *p, float spawnX, float spawnY);
 void updatePlayer(Player *p, Level *level, App *app);
 void renderPlayer(Player *p, SDL_Renderer *renderer);
 

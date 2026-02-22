@@ -10,6 +10,8 @@
 
 typedef struct {
     int map[LEVEL_ROWS][LEVEL_COLS];
+    float spawnX;
+    float spawnY;
 } Level;
 
 void initLevel(Level *level, int levelNumber);

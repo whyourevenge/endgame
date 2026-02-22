@@ -97,16 +97,18 @@ int main(void) {
     app.currentLevel = 1;
 
     Player player = {0};
-    initPlayer(&player);
-
     Level level = {0};
+
     initLevel(&level, app.currentLevel);
+
+    initPlayer(&player, level.spawnX, level.spawnY);
 
     // --- ПЕРМІННІ ДЛЯ ЛІМІТУ FPS (ХОТФИКС) ---
     const int FPS = 60;
     const int frameDelay = 1000 / FPS; // Скільки мілісекунд має тривати 1 кадр (~16 мс)
     Uint32 frameStart;
     int frameTime;
+
 
     while (app.isRunning) {
         frameStart = SDL_GetTicks();
@@ -130,7 +132,7 @@ int main(void) {
                 }
                 break;
             case STATE_GAMEOVER:
-                updateGameOver(&app, &player);
+                updateGameOver(&app, &level,&player);
                 break;
             case STATE_SETTINGS:
                 // Поки що налаштувань немає, просто по кліку ESC вийдемо в меню
