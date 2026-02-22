@@ -7,6 +7,9 @@
 void updateMenu(App *app);
 void renderMenu(App *app);
 
+void updatePauseMenu(App *app);
+void renderPauseMenu(App *app);
+
 void updateGameOver(App *app, Level *level,Player *player);
 void renderGameOver(App *app);
 

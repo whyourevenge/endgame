@@ -101,9 +101,6 @@ void updatePlayer(Player *p, Level *level, App *app) {
         if (keys[SDL_SCANCODE_LEFT])  p->gravDir = GRAV_LEFT;
         if (keys[SDL_SCANCODE_RIGHT]) p->gravDir = GRAV_RIGHT;
     }
-
-
-
     if (p->gravDir == GRAV_DOWN || p->gravDir == GRAV_UP) {
         p->dx = 0.0f;
         if (keys[SDL_SCANCODE_A]) p->dx = -walkSpeed;
@@ -129,8 +126,6 @@ void updatePlayer(Player *p, Level *level, App *app) {
             if (p->dx < -maxFallSpeed) p->dx = -maxFallSpeed;
         }
     }
-
-    
     p->x += p->dx; 
     if (checkCollision(p, level)) {
         // Якщо врізалися - відштовхуємось назад
@@ -159,8 +154,8 @@ void updatePlayer(Player *p, Level *level, App *app) {
     if (checkDeath(p, level)) {
         app->deathCount++; // Плюсуємо смерть
         printf("[СТАТИСТИКА] Упс! Гравітація перемогла. Смертей за гру: %d\n", app->deathCount);
-        
         app->state = STATE_GAMEOVER;
+        app->gameOverAlpha = 0;
     }
 
     // --- 6. ПЕРЕВІРКА ПЕРЕМОГИ ---
