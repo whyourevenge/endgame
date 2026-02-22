@@ -171,7 +171,6 @@ int main(void) {
                 SDL_RenderClear(app.renderer);
                 break;
             case STATE_VICTORY:
-                // Золотий колір для екрану перемоги (R:255, G:215, B:0)
                 SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
                 SDL_RenderClear(app.renderer);
                 break;
