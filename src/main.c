@@ -100,6 +100,14 @@ int main(void) {
                     app.state = STATE_MENU;
                 }
                 break;
+            case STATE_VICTORY:
+                // Якщо натиснули ENTER або ESC - повертаємося в головне меню
+                if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RETURN] || 
+                    SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
+                    app.state = STATE_MENU;
+                    app.currentLevel = 1; // Скидаємо прогрес, щоб можна було почати заново
+                }
+                break;
         }
 
         // --- РЕНДЕР (DRAW) ЗАЛЕЖНО ВІД СТАНУ ---
@@ -121,6 +129,11 @@ int main(void) {
             case STATE_SETTINGS:
                 // Малюємо синій екран для налаштувань
                 SDL_SetRenderDrawColor(app.renderer, 0, 0, 100, 255);
+                SDL_RenderClear(app.renderer);
+                break;
+            case STATE_VICTORY:
+                // Золотий колір для екрану перемоги (R:255, G:215, B:0)
+                SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
                 SDL_RenderClear(app.renderer);
                 break;
         }
