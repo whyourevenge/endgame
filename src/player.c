@@ -105,8 +105,8 @@ void saveScore(int level, float time, int deaths) {
 void updatePlayer(Player *p, Level *level, App *app) {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
-    float gravity = 0.8f;      
-    float maxFallSpeed = 15.0f; 
+    float gravity = 0.6f;      
+    float maxFallSpeed = 12.0f; 
     float walkSpeed = 6.0f;    
 
     // --- 1. КЕРУВАННЯ ВЕКТОРОМ ГРАВІТАЦІЇ ---
