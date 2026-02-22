@@ -33,6 +33,7 @@ bool initApp(App *app) {
         SDL_Quit();
         return false;
     }
+    SDL_SetRenderDrawBlendMode(app->renderer, SDL_BLENDMODE_BLEND);
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("Ошибка инициализации SDL_mixer: %s\n", Mix_GetError());
@@ -83,8 +84,22 @@ void handleEvents(App *app) {
             app->isRunning = false;
         }
         
-        if (event.key.keysym.sym == SDLK_ESCAPE) {
-            app->isRunning = false;
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                if (app->state == STATE_PLAY) {
+                    app->state = STATE_PAUSE;
+                    app->mouseReleased = false; 
+                } 
+                else if (app->state == STATE_PAUSE) {
+                    app->state = STATE_PLAY;
+                }
+                else if (app->state == STATE_SETTINGS) {
+                    app->state = STATE_PAUSE;
+                }
+                else if (app->state == STATE_MENU) {
+                    app->isRunning = false;
+                }
+            }
         }
     }
 }
@@ -114,6 +129,19 @@ void cleanupApp(App *app) {
     }
     SDL_Quit();
     printf("Game closed successfully. Resources freed.\n");
+}
+
+void resetGame(App *app, Level *level, Player *player) {
+    app->currentLevel = 1;
+
+    app->deathCount = 0;
+    app->levelStartTime = SDL_GetTicks();
+
+    initLevel(level, app->currentLevel);
+
+    initPlayer(player, level->spawnX, level->spawnY);
+
+    printf("Game has been reset to Level 1.\n");
 }
 
 int main(void) {
@@ -152,17 +180,15 @@ int main(void) {
                 break;
             case STATE_PLAY:
                 updatePlayer(&player, &level, &app); // Передаємо &app
-
-                if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
-                    app.state = STATE_MENU;
-                    
-                    // --- ВКЛЮЧАЕМ МУЗЫКУ ОБРАТНО ---
-                    // Здесь app - это обычная структура, поэтому используем точку (.)
-                    Mix_PlayMusic(app.menuMusic, -1); 
-                }
+                break;
+            case STATE_PAUSE:
+                updatePauseMenu(&app);
                 break;
             case STATE_GAMEOVER:
                 updateGameOver(&app, &level,&player);
+                if (app.gameOverAlpha < 150) {
+                app.gameOverAlpha += 5;
+                }
                 break;
             case STATE_SETTINGS:
                 // Поки що налаштувань немає, просто по кліку ESC вийдемо в меню
@@ -174,8 +200,8 @@ int main(void) {
                 // Якщо натиснули ENTER або ESC - повертаємося в головне меню
                 if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RETURN] || 
                     SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
+                    resetGame(&app, &level, &player);
                     app.state = STATE_MENU;
-                    app.currentLevel = 1; // Скидаємо прогрес, щоб можна було почати заново
                     Mix_PlayMusic(app.menuMusic, -1);
                 }
                 break;
@@ -194,8 +220,28 @@ int main(void) {
                 renderLevel(&level, app.renderer);
                 renderPlayer(&player, app.renderer);
                 break;
+            case STATE_PAUSE:
+                // 1. Рисуем игру (она будет "заморожена" на фоне)
+                renderLevel(&level, app.renderer);
+                renderPlayer(&player, app.renderer);
+
+                // 2. Затемняем экран
+                SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 150); // Полупрозрачный черный
+                SDL_Rect overlay = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+                SDL_RenderFillRect(app.renderer, &overlay);
+
+                // 3. Рисуем кнопки паузы
+                renderPauseMenu(&app); 
+                break;
             case STATE_GAMEOVER:
-                renderGameOver(&app);
+                renderLevel(&level, app.renderer);
+                renderPlayer(&player, app.renderer);
+                SDL_SetRenderDrawColor(app.renderer, 100, 0, 0, app.gameOverAlpha); 
+                SDL_Rect fullScreen = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
+                SDL_RenderFillRect(app.renderer, &fullScreen);
+                if (app.gameOverAlpha >= 150) {
+                    renderGameOver(&app);
+                }
                 break;
             case STATE_SETTINGS:
                 // Малюємо синій екран для налаштувань
