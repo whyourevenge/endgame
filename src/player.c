@@ -179,7 +179,15 @@ void updatePlayer(Player *p, Level *level, App *app) {
             // Інакше — просто завантажуємо наступний рівень 
             printf("Рівень пройдено! Переходимо на рівень %d\n", app->currentLevel);
             initLevel(level, app->currentLevel);
-            initPlayer(p, level->spawnX, level->spawnY);      
+            initPlayer(p, level->spawnX, level->spawnY); 
+            
+            
+                 if (app->currentLevel == 2 && app->level2Music) 
+                     Mix_PlayMusic(app->level2Music, -1);
+            
+                 else if (app->currentLevel == 3 && app->level3Music) 
+                     Mix_PlayMusic(app->level3Music, -1);
+            
             
             // ВАЖЛИВО: Ми більше НЕ скидаємо app->deathCount 
             // і НЕ оновлюємо таймер! Час продовжує йти.
