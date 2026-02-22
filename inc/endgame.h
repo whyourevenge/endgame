@@ -21,6 +21,10 @@ typedef struct {
     bool		    isRunning;
     GameState       state;
     int             currentLevel;
+
+    // --- СТАТИСТИКА ---
+    int             deathCount;
+    Uint32          levelStartTime;
 } App;
 
 #endif

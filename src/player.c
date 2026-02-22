@@ -149,15 +149,28 @@ void updatePlayer(Player *p, Level *level, App *app) {
 
     // --- 5. ПЕРЕВІРКА СМЕРТІ ---
     if (checkDeath(p, level)) {
-        printf("Гравець помер! Рестарт...\n");
+        app->deathCount++; // Плюсуємо смерть
+        printf("[СТАТИСТИКА] Упс! Гравітація перемогла. Смертей за гру: %d\n", app->deathCount);
+        
         app->state = STATE_GAMEOVER;
     }
 
     // --- 6. ПЕРЕВІРКА ПЕРЕМОГИ ---
     if (checkWin(p, level)) {
-        app->currentLevel++; // Підвищуємо рівень!
-        initPlayer(p);       // Ставимо гравця назад на старт
-        initLevel(level, app->currentLevel); // Завантажуємо НОВУ карту
+        // Рахуємо, скільки мілісекунд пройшло, і ділимо на 1000, щоб отримати секунди
+        float levelTimeSeconds = (SDL_GetTicks() - app->levelStartTime) / 1000.0f;
+        
+        printf("[ПЕРЕМОГА!] Рівень %d пройдено!\n", app->currentLevel);
+        printf(" -> Час проходження: %.2f секунд\n", levelTimeSeconds);
+        printf(" -> Загальна кількість смертей: %d\n", app->deathCount);
+        printf("------------------------------------\n");
+
+        app->currentLevel++; 
+        initPlayer(p);       
+        initLevel(level, app->currentLevel); 
+        
+        // Оновлюємо таймер для наступного рівня
+        app->levelStartTime = SDL_GetTicks(); 
     }
 }
 

@@ -24,6 +24,10 @@ void updateMenu(App *app) {
     if (isLeftClicked) {
         if (isMouseInside(mx, my, btnPlay)) {
             app->state = STATE_PLAY; // Запускаємо гру!
+
+            // --- СКИДАЄМО СТАТИСТИКУ ПРИ НОВІЙ ГРІ ---
+            app->deathCount = 0; 
+            app->levelStartTime = SDL_GetTicks();
         }
         else if (isMouseInside(mx, my, btnSettings)) {
             app->state = STATE_SETTINGS; // Переходимо в налаштування
@@ -66,6 +70,9 @@ void updateGameOver(App *app, Player *player) {
     if (keys[SDL_SCANCODE_RETURN]) {
         initPlayer(player);
         app->state = STATE_PLAY;
+
+        // --- РЕСТАРТ ТАЙМЕРА РІВНЯ ---
+        app->levelStartTime = SDL_GetTicks();
     }
     // Або ESC, щоб вийти в головне меню
     if (keys[SDL_SCANCODE_ESCAPE]) {
