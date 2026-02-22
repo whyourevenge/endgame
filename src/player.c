@@ -110,7 +110,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
     float maxFallSpeed = 12.0f; 
     float walkSpeed = 6.0f;    
 
-    // --- 1. КЕРУВАННЯ ВЕКТОРОМ ГРАВІТАЦІЇ ---
+    
     Uint32 currentTime = SDL_GetTicks();
     Uint32 spawnDelay = 1000; // Задержка в миллисекундах (1000 = 1 секунда). Можешь поставить 500.
 
