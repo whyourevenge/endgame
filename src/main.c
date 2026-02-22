@@ -97,10 +97,11 @@ int main(void) {
     app.currentLevel = 1;
 
     Player player = {0};
-    initPlayer(&player);
-
     Level level = {0};
+
     initLevel(&level, app.currentLevel);
+
+    initPlayer(&player, level.spawnX, level.spawnY);
 
     while (app.isRunning) {
         handleEvents(&app);
@@ -122,7 +123,7 @@ int main(void) {
                 }
                 break;
             case STATE_GAMEOVER:
-                updateGameOver(&app, &player);
+                updateGameOver(&app, &level,&player);
                 break;
             case STATE_SETTINGS:
                 // Поки що налаштувань немає, просто по кліку ESC вийдемо в меню

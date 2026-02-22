@@ -1,11 +1,12 @@
 #include "player.h"
+#include <level.h>
 
-void initPlayer(Player *p) {
+void initPlayer(Player *p, float spawnX, float spawnY) {
     p->width = 32;
     p->height = 32;
     // Ставимо його на безпечне місце (там де в нашому масиві нулі)
-    p->x = 200.0f;
-    p->y = 200.0f;
+    p->x = spawnX;
+    p->y = spawnY;
     p->dx = 0.0f;
     p->dy = 0.0f;
     p->gravDir = GRAV_DOWN; 
@@ -193,9 +194,9 @@ void updatePlayer(Player *p, Level *level, App *app) {
             // Якщо ми щойно пройшли 3-й рівень, гра закінчена!
             app->state = STATE_VICTORY;
         } else {
-            // Інакше — завантажуємо наступний рівень
-            initPlayer(p);       
+            // Інакше — завантажуємо наступний рівень 
             initLevel(level, app->currentLevel); 
+            initPlayer(p, level->spawnX, level->spawnY);      
             
             // Скидаємо лічильник смертей для нового рівня і оновлюємо таймер
             app->deathCount = 0;

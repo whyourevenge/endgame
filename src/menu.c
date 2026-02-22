@@ -64,12 +64,12 @@ void renderMenu(App *app) {
 }
 
 // --- ЕКРАН GAME OVER ---
-void updateGameOver(App *app, Player *player) {
+void updateGameOver(App *app, Level *level,Player *player) {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
     // Чекаємо натискання ENTER (Return) для рестарту
     if (keys[SDL_SCANCODE_RETURN]) {
-        initPlayer(player);
+        initPlayer(player, level->spawnX, level->spawnY);
         app->state = STATE_PLAY;
 
         // --- РЕСТАРТ ТАЙМЕРА РІВНЯ ---
@@ -77,7 +77,7 @@ void updateGameOver(App *app, Player *player) {
     }
     // Або ESC, щоб вийти в головне меню
     if (keys[SDL_SCANCODE_ESCAPE]) {
-        initPlayer(player);
+        initPlayer(player, level->spawnX, level->spawnY);
         app->state = STATE_MENU;
         Mix_PlayMusic(app->menuMusic, -1);
     }
