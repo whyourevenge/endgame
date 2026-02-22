@@ -123,7 +123,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
     }
 
 
-    // --- 2. РОЗРАХУНОК ШВИДКОСТІ (DX та DY) ---
+
     if (p->gravDir == GRAV_DOWN || p->gravDir == GRAV_UP) {
         p->dx = 0.0f;
         if (keys[SDL_SCANCODE_A]) p->dx = -walkSpeed;
