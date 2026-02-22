@@ -2,7 +2,7 @@ NAME        = endgame
 
 CC          = clang
 CFLAGS      = -Wall -Wextra -Werror -I$(INC_DIR)
-LDFLAGS     = -lSDL2 -lSDL2_image -lSDL2_mixer
+LDFLAGS     = -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 SRC_DIR     = src
 INC_DIR     = inc
