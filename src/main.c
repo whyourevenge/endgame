@@ -102,7 +102,15 @@ int main(void) {
     Level level = {0};
     initLevel(&level, app.currentLevel);
 
+    // --- ПЕРМІННІ ДЛЯ ЛІМІТУ FPS (ХОТФИКС) ---
+    const int FPS = 60;
+    const int frameDelay = 1000 / FPS; // Скільки мілісекунд має тривати 1 кадр (~16 мс)
+    Uint32 frameStart;
+    int frameTime;
+
     while (app.isRunning) {
+        frameStart = SDL_GetTicks();
+
         handleEvents(&app);
 
         // --- ЛОГІКА (UPDATE) ЗАЛЕЖНО ВІД СТАНУ ---
@@ -170,6 +178,12 @@ int main(void) {
         }
 
         SDL_RenderPresent(app.renderer);
+
+        frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
 
     cleanupApp(&app);
