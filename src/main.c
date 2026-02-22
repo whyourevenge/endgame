@@ -56,12 +56,17 @@ bool initApp(App *app) {
         }
     }
 
+    app->victoryBg = IMG_LoadTexture(app->renderer, "resource/images/victory_bg.png");
+    if (!app->victoryBg) {
+        printf("Не удалось загрузить фон победы: %s\n", IMG_GetError());
+    }
+
     if (TTF_Init() == -1) {
         printf("Помилка ініціалізації SDL_ttf: %s\n", TTF_GetError());
         return false;
     }
     // ВАЖЛИВО: Тобі треба буде закинути будь-який файл шрифту (.ttf) у папку resource!
-    app->font = TTF_OpenFont("resource/Jersey10-Regular.ttf", 48); // 48 - це розмір шрифту
+    app->font = TTF_OpenFont("resource/Jersey10-Regular.ttf", 64); // 48 - це розмір шрифту
     if (!app->font) {
         printf("Не вдалося завантажити шрифт: %s\n", TTF_GetError());
     }
@@ -86,6 +91,10 @@ void handleEvents(App *app) {
 
 // Freeing resources
 void cleanupApp(App *app) {
+    if (app->victoryBg) {
+        SDL_DestroyTexture(app->victoryBg);
+    }
+
     if (app->menuMusic) {
         Mix_FreeMusic(app->menuMusic);
     }
@@ -194,32 +203,54 @@ int main(void) {
                 SDL_RenderClear(app.renderer);
                 break;
             case STATE_VICTORY:
-                // Золотий фон
-                SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
-                SDL_RenderClear(app.renderer);
+                // 1. РИСУЕМ ФОНОВУЮ КАРТИНКУ
+                if (app.victoryBg != NULL) {
+                    SDL_RenderCopy(app.renderer, app.victoryBg, NULL, NULL);
+                } else {
+                    // Запасной план, если картинка не загрузилась
+                    SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
+                    SDL_RenderClear(app.renderer);
+                }
 
+                // 2. РИСУЕМ ТЕКСТЫ
                 if (app.font != NULL) {
-                    char timeText[64];
-                    // Формуємо рядок тексту з нашим часом
-                    sprintf(timeText, "VICTORY! Your time: %.2f sec", app.finalTime);
+                    // --- ГЛАВНЫЙ ТЕКСТ (Время и Смерти) ---
+                    char timeText[128];
+                    sprintf(timeText, "VICTORY! Time: %.2f sec | Deaths: %d", app.finalTime, app.deathCount);
 
-                    SDL_Color textColor = {0, 0, 0, 255}; // Чорний текст
-                    SDL_Surface *textSurface = TTF_RenderUTF8_Blended(app.font, timeText, textColor);
-                    SDL_Texture *textTexture = SDL_CreateTextureFromSurface(app.renderer, textSurface);
+                    SDL_Color whiteColor = {255, 255, 255, 255}; // Белый текст лучше видно на картинках
+                    SDL_Surface *surf1 = TTF_RenderUTF8_Blended(app.font, timeText, whiteColor);
+                    SDL_Texture *tex1 = SDL_CreateTextureFromSurface(app.renderer, surf1);
 
-                    // Центруємо текст на екрані
-                    SDL_Rect textRect = { 
-                        (WINDOW_WIDTH - textSurface->w) / 2, 
-                        (WINDOW_HEIGHT - textSurface->h) / 2, 
-                        textSurface->w, 
-                        textSurface->h 
+                    // Центрируем и поднимаем чуть ВЫШЕ середины экрана
+                    SDL_Rect rect1 = { 
+                        (WINDOW_WIDTH - surf1->w) / 2, 
+                        (WINDOW_HEIGHT / 2) - surf1->h, 
+                        surf1->w, 
+                        surf1->h 
                     };
+                    SDL_RenderCopy(app.renderer, tex1, NULL, &rect1);
 
-                    SDL_RenderCopy(app.renderer, textTexture, NULL, &textRect);
+                    // --- ТЕКСТ-ИНСТРУКЦИЯ ---
+                    const char *hintText = "Press [ENTER] to return to Main Menu";
+                    SDL_Color grayColor = {200, 200, 200, 255}; // Слегка серый цвет для второстепенного текста
+                    SDL_Surface *surf2 = TTF_RenderUTF8_Blended(app.font, hintText, grayColor);
+                    SDL_Texture *tex2 = SDL_CreateTextureFromSurface(app.renderer, surf2);
 
-                    // Очищаємо пам'ять кадру
-                    SDL_FreeSurface(textSurface);
-                    SDL_DestroyTexture(textTexture);
+                    // Центрируем и опускаем чуть НИЖЕ середины экрана
+                    SDL_Rect rect2 = { 
+                        (WINDOW_WIDTH - surf2->w) / 2, 
+                        (WINDOW_HEIGHT / 2) + 20, 
+                        surf2->w, 
+                        surf2->h 
+                    };
+                    SDL_RenderCopy(app.renderer, tex2, NULL, &rect2);
+
+                    // Очищаем память от поверхностей и текстур текста
+                    SDL_FreeSurface(surf1);
+                    SDL_DestroyTexture(tex1);
+                    SDL_FreeSurface(surf2);
+                    SDL_DestroyTexture(tex2);
                 }
                 break;
         }

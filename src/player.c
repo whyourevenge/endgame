@@ -176,7 +176,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
             printf(" -> Загальний час: %.2f секунд\n", app->finalTime);
             
             if (app->winSound) {
-                Mix_PlayChannel(-1, app->winSound, 0); 
+                Mix_PlayChannel(-1, app->winSound, 0);
             }
 
             app->state = STATE_VICTORY;
