@@ -13,6 +13,7 @@ typedef enum {
     STATE_MENU,
     STATE_SETTINGS,
     STATE_PLAY,
+    STATE_PAUSE,
     STATE_GAMEOVER,
     STATE_VICTORY
 } GameState;
@@ -21,12 +22,12 @@ typedef struct {
     SDL_Window		*window;
     SDL_Renderer	*renderer;
     bool		    isRunning;
+    bool            mouseReleased;
     GameState       state;
     int             currentLevel;
-
+    int             gameOverAlpha;
     int             deathCount;
     Uint32          levelStartTime;
-
     Mix_Music       *menuMusic;
 } App;
 
