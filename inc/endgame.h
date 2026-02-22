@@ -25,7 +25,7 @@ typedef struct {
     int             currentLevel;
 
     int             deathCount;
-    Uint32          levelStartTime;
+    Uint32          gameStartTime;
 
     Mix_Music       *menuMusic;
 } App;
