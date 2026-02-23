@@ -52,6 +52,7 @@ typedef struct {
     TTF_Font        *font;
 
     SDL_Texture     *menuBg;
+    SDL_Texture     *settingsBg;
     SDL_Texture     *victoryBg;
   
     int             volume;

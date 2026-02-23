@@ -74,6 +74,11 @@ bool initApp(App *app) {
         printf("Warning: Failed to load menu background: %s\n", IMG_GetError());
     }
 
+    app->settingsBg = IMG_LoadTexture(app->renderer, "resource/images/settings_bg.png"); 
+    if (!app->settingsBg) {
+        printf("Warning: Failed to load settings background: %s\n", IMG_GetError());
+    }
+
     app->victoryBg = IMG_LoadTexture(app->renderer, "resource/images/victory_bg.png");
     if (!app->victoryBg) 
         printf("Failed to load victory background: %s\n", IMG_GetError());
@@ -162,6 +167,9 @@ void handleEvents(App *app) {
 void cleanupApp(App *app) {
     if (app->menuBg) 
         SDL_DestroyTexture(app->menuBg);
+
+    if (app->settingsBg) 
+        SDL_DestroyTexture(app->settingsBg);
 
     if (app->victoryBg) 
         SDL_DestroyTexture(app->victoryBg);
