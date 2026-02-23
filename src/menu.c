@@ -37,7 +37,12 @@ void updateMenu(App *app, Player *player) {
             app->deathCount = 0;
             player->coins = 0;
             app->gameStartTime = SDL_GetTicks();
+            
+            if (app->level1Music) 
+                Mix_PlayMusic(app->level1Music, -1);
+
         }
+        
         else if (isMouseInside(mx, my, btnSettings)) {
             app->mouseReleased = false;
             app->state = STATE_SETTINGS; // Переходимо в налаштування
