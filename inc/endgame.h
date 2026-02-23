@@ -26,23 +26,39 @@ extern GameState previousState;
 typedef struct {
     SDL_Window	    *window;
     SDL_Renderer    *renderer;
+
     bool            isRunning;
+
     bool            mouseReleased;
     GameState       state;
+
     int             currentLevel;
     int             gameOverAlpha;
     int             deathCount; 
+
     Uint32          gameStartTime;
+
     Mix_Music       *menuMusic;
+
     Mix_Chunk       *winSound;
     Mix_Chunk       *coinSound;
+
     Mix_Music       *level1Music;
     Mix_Music       *level2Music;
     Mix_Music       *level3Music;
-    float           finalTime;     
-    TTF_Font        *font;        
+
+    float           finalTime;
+
+    TTF_Font        *font;
+
+    SDL_Texture     *menuBg;
     SDL_Texture     *victoryBg;
+  
     int             volume;
+
+    SDL_Texture     *playButton;
+    SDL_Texture     *settingsButton;
+    SDL_Texture     *exitButton;
 } App;
 
 #endif

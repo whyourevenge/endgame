@@ -47,6 +47,13 @@ void updateMenu(App *app, Player *player) {
 }
 
 void renderMenu(App *app) {
+    if (app->menuBg != NULL) {
+        SDL_RenderCopy(app->renderer, app->menuBg, NULL, NULL);
+    } else {
+        SDL_SetRenderDrawColor(app->renderer, 20, 20, 30, 255);
+        SDL_RenderClear(app->renderer);
+    }
+
     int mx, my;
     SDL_GetMouseState(&mx, &my);
 
@@ -54,17 +61,44 @@ void renderMenu(App *app) {
     SDL_Rect btnSettings = { 1280/2 - 100, 350, 200, 60 };
     SDL_Rect btnExit     = { 1280/2 - 100, 450, 200, 60 };
 
-    if (isMouseInside(mx, my, btnPlay)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnPlay);
+    if (app->playButton) {
+        if (isMouseInside(mx, my, btnPlay)) {
+            SDL_SetTextureColorMod(app->playButton, 255, 255, 255);
+        } else {
+            SDL_SetTextureColorMod(app->playButton, 200, 200, 200);
+        }
+        SDL_RenderCopy(app->renderer, app->playButton, NULL, &btnPlay);
+    } else {
+        if (isMouseInside(mx, my, btnPlay)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
+        else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
+        SDL_RenderFillRect(app->renderer, &btnPlay);
+    }
 
-    if (isMouseInside(mx, my, btnSettings)) SDL_SetRenderDrawColor(app->renderer, 255, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 200, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnSettings);
+    if (app->settingsButton) {
+        if (isMouseInside(mx, my, btnSettings)) {
+            SDL_SetTextureColorMod(app->settingsButton, 255, 255, 255);
+        } else {
+            SDL_SetTextureColorMod(app->settingsButton, 200, 200, 200);
+        }
+        SDL_RenderCopy(app->renderer, app->settingsButton, NULL, &btnSettings);
+    } else {
+        if (isMouseInside(mx, my, btnSettings)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
+        else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
+        SDL_RenderFillRect(app->renderer, &btnSettings);
+    }
 
-    if (isMouseInside(mx, my, btnExit)) SDL_SetRenderDrawColor(app->renderer, 255, 100, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 200, 50, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnExit);
+    if (app->exitButton) {
+        if (isMouseInside(mx, my, btnExit)) {
+            SDL_SetTextureColorMod(app->exitButton, 255, 255, 255);
+        } else {
+            SDL_SetTextureColorMod(app->exitButton, 200, 200, 200);
+        }
+        SDL_RenderCopy(app->renderer, app->exitButton, NULL, &btnExit);
+    } else {
+        if (isMouseInside(mx, my, btnExit)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
+        else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
+        SDL_RenderFillRect(app->renderer, &btnExit);
+    }
 }
 
 void updatePauseMenu(App *app, Level *level, Player *player) {
