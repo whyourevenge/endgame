@@ -2,6 +2,9 @@
 #include "player.h"
 #include "level.h"
 #include "menu.h"
+#include "utilities.h"
+
+GameState previousState = STATE_MENU;
 
 bool initApp(App *app) {
 
@@ -66,6 +69,12 @@ bool initApp(App *app) {
         if (!app->winSound) {
             printf("Не удалось загрузить звук победы: %s\n", Mix_GetError());
         }
+
+        app->coinSound = Mix_LoadWAV("resource/audio/coin.wav");
+        Mix_VolumeChunk(app->coinSound, 24);
+        if (!app->coinSound) {
+            printf("Не удалось загрузить звук подбора монетки: %s\n", Mix_GetError());
+        }
     }
 
     app->victoryBg = IMG_LoadTexture(app->renderer, "resource/images/victory_bg.png");
@@ -94,21 +103,50 @@ void handleEvents(App *app) {
         if (event.type == SDL_QUIT) {
             app->isRunning = false;
         }
-        
+
         if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                if (app->state == STATE_PLAY) {
+            SDL_Keycode key = event.key.keysym.sym;
+
+            if (app->state == STATE_MENU) {
+                if (key == SDLK_ESCAPE) {
+                    app->isRunning = false;
+                }
+            }
+            
+            else if (app->state == STATE_PLAY) {
+                if (key == SDLK_ESCAPE) {
                     app->state = STATE_PAUSE;
-                    app->mouseReleased = false; 
-                } 
-                else if (app->state == STATE_PAUSE) {
+                    previousState = app->state; 
+                    app->mouseReleased = false;
+                }
+            }
+
+            else if (app->state == STATE_PAUSE) {
+                if (key == SDLK_ESCAPE) {
                     app->state = STATE_PLAY;
                 }
-                else if (app->state == STATE_SETTINGS) {
-                    app->state = STATE_PAUSE;
+            }
+
+            else if (app->state == STATE_SETTINGS) {
+                if (key == SDLK_ESCAPE) {
+                    app->state = previousState;
                 }
-                else if (app->state == STATE_MENU) {
-                    app->isRunning = false;
+            }
+
+            else if (app->state == STATE_GAMEOVER) {
+                if (key == SDLK_KP_ENTER) {
+                    app->state = STATE_PLAY;
+                } 
+                else if (key == SDLK_ESCAPE) {
+                    app->state = STATE_MENU;
+                    previousState = app->state; 
+                }
+            }
+
+            else if (app->state == STATE_VICTORY) {
+                if (key == SDLK_KP_ENTER) {
+                    app->state = STATE_MENU;
+                    previousState = app->state; 
                 }
             }
         }
@@ -126,6 +164,9 @@ void cleanupApp(App *app) {
     }
     if (app->winSound) {
         Mix_FreeChunk(app->winSound);
+    }
+    if (app->coinSound) {
+        Mix_FreeChunk(app->coinSound);
     }
     
     
@@ -154,6 +195,8 @@ void resetGame(App *app, Level *level, Player *player) {
 
     app->deathCount = 0;
     app->gameStartTime = SDL_GetTicks();
+
+    player->coins = 0;
 
     initLevel(level, app->currentLevel);
 
@@ -194,16 +237,17 @@ int main(void) {
         // --- ЛОГІКА (UPDATE) ЗАЛЕЖНО ВІД СТАНУ ---
         switch (app.state) {
             case STATE_MENU:
-                updateMenu(&app);
+                updateMenu(&app, &player);
                 break;
             case STATE_PLAY:
                 updatePlayer(&player, &level, &app); // Передаємо &app
                 break;
             case STATE_PAUSE:
-                updatePauseMenu(&app);
+                updatePauseMenu(&app, &level, &player);
                 break;
             case STATE_GAMEOVER:
-                updateGameOver(&app, &level,&player);
+                player.coins = player.coinsAtLevelStart;
+                updateGameOver(&app, &level,&player, app.currentLevel, app.renderer);
                 if (app.gameOverAlpha < 150) {
                 app.gameOverAlpha += 5;
                 }
