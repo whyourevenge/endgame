@@ -2,6 +2,7 @@
 #include "endgame.h"
 #include "menu.h"
 #include "player.h"
+#include "utilities.h"
 
 // Допоміжна функція: перевіряє, чи мишка знаходиться всередині прямокутника
 bool isMouseInside(int mouseX, int mouseY, SDL_Rect rect) {
@@ -10,7 +11,7 @@ bool isMouseInside(int mouseX, int mouseY, SDL_Rect rect) {
 }
 
 // --- ГОЛОВНЕ МЕНЮ ---
-void updateMenu(App *app) {
+void updateMenu(App *app, Player *player) {
     int mx, my;
     Uint32 mouseState = SDL_GetMouseState(&mx, &my);
     bool isLeftClicked = (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
@@ -34,6 +35,7 @@ void updateMenu(App *app) {
             app->state = STATE_PLAY;
             app->currentLevel = 1;
             app->deathCount = 0;
+            player->coins = 0;
             app->gameStartTime = SDL_GetTicks();
         }
         else if (isMouseInside(mx, my, btnSettings)) {
@@ -71,7 +73,7 @@ void renderMenu(App *app) {
 }
 
 // --- МЕНЮ ПАУЗИ ---
-void updatePauseMenu(App *app) {
+void updatePauseMenu(App *app, Level *level, Player *player) {
     int mouseX, mouseY;
     Uint32 mouseState = SDL_GetMouseState(&mouseX, &mouseY);
     bool isLeftClicked = (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT));
@@ -99,6 +101,7 @@ void updatePauseMenu(App *app) {
         else if (isMouseInside(mouseX, mouseY, btnPauseExit)) {
             app->mouseReleased = false;
             app->state = STATE_MENU;
+            resetGame(app, level, player);
             Mix_PlayMusic(app->menuMusic, -1);
         }
     }
@@ -133,7 +136,7 @@ void renderPauseMenu(App *app) {
 }
 
 // --- ЕКРАН GAME OVER ---
-void updateGameOver(App *app, Level *level,Player *player) {
+void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL_Renderer *renderer) {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
@@ -152,6 +155,8 @@ void updateGameOver(App *app, Level *level,Player *player) {
     SDL_Rect btnQuit = { centerX, 340, btnW, btnH };
     if (keys[SDL_SCANCODE_RETURN] || (isLeftClicked && isMouseInside(mouseX, mouseY, btnRestart))) {
         initPlayer(player, level->spawnX, level->spawnY);
+        initLevel(level, CurrentLevel);
+        renderLevel(level, renderer);
         app->state = STATE_PLAY;
 
         // --- РЕСТАРТ ТАЙМЕРА РІВНЯ ---
@@ -161,6 +166,7 @@ void updateGameOver(App *app, Level *level,Player *player) {
         app->mouseReleased = false;
         initPlayer(player, level->spawnX, level->spawnY);
         app->state = STATE_MENU;
+        resetGame(app, level, player);
         Mix_PlayMusic(app->menuMusic, -1);
     }
 }

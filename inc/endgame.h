@@ -20,6 +20,9 @@ typedef enum {
     STATE_VICTORY
 } GameState;
 
+extern GameState currentState;
+extern GameState previousState;
+
 typedef struct {
     SDL_Window		*window;
     SDL_Renderer	*renderer;
@@ -34,6 +37,7 @@ typedef struct {
   
     Mix_Music       *menuMusic;
     Mix_Chunk       *winSound;
+    Mix_Chunk       *coinSound;
 
     float           finalTime;     // Щоб зберегти фінальний час
     TTF_Font        *font;         // Наш шрифт

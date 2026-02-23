@@ -17,6 +17,8 @@ typedef struct {
     float x, y;
     float dx, dy;
     int width, height;
+    int coins;
+    int coinsAtLevelStart;
     GravityDir gravDir;
     Uint32 spawnTime;
 } Player;

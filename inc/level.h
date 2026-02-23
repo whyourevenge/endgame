@@ -14,6 +14,7 @@ typedef struct {
     float spawnY;
 } Level;
 
+void loadLevelFromFile(Level *level, const char *filename);
 void initLevel(Level *level, int levelNumber);
 void renderLevel(Level *level, SDL_Renderer *renderer);
 

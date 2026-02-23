@@ -39,6 +39,23 @@ int checkCollision(Player *p, Level *level) {
     return 0; // Колізій немає
 }
 
+void checkCoinCollision(App *app, Player *player, Level *level) {
+    // Розраховуємо координати центру гравця
+    int centerX = (player->x + TILE_SIZE / 2) / TILE_SIZE;
+    int centerY = (player->y + TILE_SIZE / 2) / TILE_SIZE;
+
+    if (centerX >= 0 && centerX < LEVEL_COLS && centerY >= 0 && centerY < LEVEL_ROWS) {
+        if (level->map[centerY][centerX] == 4) {
+            level->map[centerY][centerX] = 0; // Видаляемо монету з мапи
+            player->coins++;                  // Збільшуємо рахунок монет
+            printf("Монет зібрано: %d\n", player->coins);
+            if (app->coinSound) {
+                Mix_PlayChannel(-1, app->coinSound, 0);
+            }
+        }
+    }
+}
+
 int checkWin(Player *p, Level *level) {
     int leftTile = p->x / TILE_SIZE;
     int rightTile = (p->x + p->width - 1) / TILE_SIZE;
@@ -127,6 +144,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
         }
     }
     p->x += p->dx; 
+    checkCoinCollision(app, p, level);
     if (checkCollision(p, level)) {
         // Якщо врізалися - відштовхуємось назад
         if (p->dx > 0) { // Рухались вправо
@@ -179,7 +197,8 @@ void updatePlayer(Player *p, Level *level, App *app) {
             // Інакше — просто завантажуємо наступний рівень 
             printf("Рівень пройдено! Переходимо на рівень %d\n", app->currentLevel);
             initLevel(level, app->currentLevel);
-            initPlayer(p, level->spawnX, level->spawnY);      
+            initPlayer(p, level->spawnX, level->spawnY);  
+            p->coinsAtLevelStart = p->coins;
             
             // ВАЖЛИВО: Ми більше НЕ скидаємо app->deathCount 
             // і НЕ оновлюємо таймер! Час продовжує йти.
