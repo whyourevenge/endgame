@@ -12,5 +12,8 @@ void renderPauseMenu(App *app);
 
 void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL_Renderer *renderer);
 void renderGameOver(App *app);
+void update_settings(App *app);
+void render_settings(App *app);
+void draw_text(App *app, const char *msg, int x, int y);
 
 #endif

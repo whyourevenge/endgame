@@ -53,7 +53,8 @@ typedef struct {
 
     SDL_Texture     *menuBg;
     SDL_Texture     *victoryBg;
-
+  
+    int             volume;
 
     SDL_Texture     *playButton;
     SDL_Texture     *settingsButton;
