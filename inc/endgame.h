@@ -42,6 +42,7 @@ typedef struct {
     float           finalTime;     
     TTF_Font        *font;        
     SDL_Texture     *victoryBg;
+    int             volume;
 } App;
 
 #endif

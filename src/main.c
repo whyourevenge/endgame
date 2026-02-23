@@ -226,6 +226,7 @@ int main(void) {
                     app.gameOverAlpha += 5;
                 break;
             case STATE_SETTINGS:
+                update_settings(&app);
                 if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) 
                     app.state = STATE_MENU;
                 break;
@@ -268,8 +269,7 @@ int main(void) {
                     renderGameOver(&app);
                 break;
             case STATE_SETTINGS:
-                SDL_SetRenderDrawColor(app.renderer, 0, 0, 100, 255);
-                SDL_RenderClear(app.renderer);
+                render_settings(&app);
                 break;
             case STATE_VICTORY:
                 if (app.victoryBg != NULL) 
