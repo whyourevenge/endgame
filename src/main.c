@@ -116,6 +116,7 @@ void handleEvents(App *app) {
             else if (app->state == STATE_PLAY) {
                 if (key == SDLK_ESCAPE) {
                     app->state = STATE_PAUSE;
+                    Mix_PauseMusic(); // <--- ДОБАВЛЕНО: Ставим на паузу
                     previousState = app->state; 
                     app->mouseReleased = false;
                 }
@@ -124,6 +125,7 @@ void handleEvents(App *app) {
             else if (app->state == STATE_PAUSE) {
                 if (key == SDLK_ESCAPE) {
                     app->state = STATE_PLAY;
+                    Mix_ResumeMusic(); // <--- ДОБАВЛЕНО: Снимаем с паузы
                 }
             }
 

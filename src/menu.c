@@ -98,6 +98,7 @@ void updatePauseMenu(App *app, Level *level, Player *player) {
     if (isLeftClicked && app->mouseReleased) {
         if (isMouseInside(mouseX, mouseY, btnPauseResume)) {
             app->state = STATE_PLAY;
+            Mix_ResumeMusic();
         }
         else if (isMouseInside(mouseX, mouseY, btnPauseSettings)) {
             app->mouseReleased = false;
@@ -166,6 +167,10 @@ void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL
 
         // --- РЕСТАРТ ТАЙМЕРА РІВНЯ ---
         app->gameStartTime = SDL_GetTicks();
+        
+        if (app->currentLevel == 1 && app->level1Music) Mix_PlayMusic(app->level1Music, -1);
+        else if (app->currentLevel == 2 && app->level2Music) Mix_PlayMusic(app->level2Music, -1);
+        else if (app->currentLevel == 3 && app->level3Music) Mix_PlayMusic(app->level3Music, -1);
     }
     if ((keys[SDL_SCANCODE_ESCAPE] || (isLeftClicked && isMouseInside(mouseX, mouseY, btnQuit))) && app->mouseReleased) {
         app->mouseReleased = false;

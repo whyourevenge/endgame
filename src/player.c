@@ -170,12 +170,13 @@ void updatePlayer(Player *p, Level *level, App *app) {
 
     // --- 5. ПЕРЕВІРКА СМЕРТІ ---
     if (checkDeath(p, level)) {
-        app->deathCount++; // Плюсуємо смерть
+        app->deathCount++;
+        Mix_HaltMusic(); // <--- ДОБАВЛЕНО: Вырубаем музыку при смерти!
+        // Плюсуємо смерть
         printf("[СТАТИСТИКА] Упс! Гравітація перемогла. Смертей за гру: %d\n", app->deathCount);
         app->state = STATE_GAMEOVER;
         app->gameOverAlpha = 0;
     }
-
     // --- 6. ПЕРЕВІРКА ПЕРЕМОГИ ---
     if (checkWin(p, level)) {
         app->currentLevel++; // Збільшуємо номер рівня
@@ -184,7 +185,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
         if (app->currentLevel > 3) {
             // ЗБЕРІГАЄМО ЧАС У СТРУКТУРУ APP:
             app->finalTime = (SDL_GetTicks() - app->gameStartTime) / 1000.0f;
-            
+            Mix_HaltMusic();
             printf("[ФІНАЛ] Гру пройдено повністю!\n");
             printf(" -> Загальний час: %.2f секунд\n", app->finalTime);
             
