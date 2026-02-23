@@ -3,20 +3,19 @@
 void loadLevelFromFile(Level *level, const char *filename) {
     FILE *file = fopen(filename, "r");
     if (!file) {
-        printf("Помилка: Не вдалося відкрити файл %s\n", filename);
+        printf("Error: Couldn't open file %s\n", filename);
         return;
     }
 
-    char line[1024]; // Буфер для одного рядка файлу
+    char line[1024]; 
     int row = 0;
 
     while (fgets(line, sizeof(line), file) && row < LEVEL_ROWS) {
         int col = 0;
-        // Розбиваємо рядок на частини за допомогою коми
         char *token = strtok(line, ",");
         
         while (token != NULL && col < LEVEL_COLS) {
-            level->map[row][col] = atoi(token); // Перетворюємо текст у число
+            level->map[row][col] = atoi(token); 
             token = strtok(NULL, ",");
             col++;
         }
@@ -62,7 +61,7 @@ void renderLevel(Level *level, SDL_Renderer *renderer) {
                 SDL_RenderFillRect(renderer, &tileRect);
             }
             else if (level->map[y][x] == 4) { 
-                SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Жовтий для монеток
+                SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); 
                 SDL_Rect coinRect = { x * TILE_SIZE + 8, y * TILE_SIZE + 8, TILE_SIZE - 16, TILE_SIZE - 16 };
                 SDL_RenderFillRect(renderer, &coinRect);
             }

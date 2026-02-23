@@ -7,13 +7,16 @@
 
 
 typedef enum { 
+
     GRAV_DOWN, 
     GRAV_UP, 
     GRAV_LEFT, 
     GRAV_RIGHT 
+    
 } GravityDir;
 
 typedef struct {
+
     float x, y;
     float dx, dy;
     int width, height;
@@ -21,6 +24,7 @@ typedef struct {
     int coinsAtLevelStart;
     GravityDir gravDir;
     Uint32 spawnTime;
+    
 } Player;
 
 void initPlayer(Player *p, float spawnX, float spawnY);

@@ -12,46 +12,35 @@ void initPlayer(Player *p, float spawnX, float spawnY) {
     p->spawnTime = SDL_GetTicks();
 }
 
-// Допоміжна функція для колізії (AABB проти Тайл-мапи)
-// Вона перевіряє, чи торкається гравець будь-якого блоку '1'
 int checkCollision(Player *p, Level *level) {
-    // Рахуємо краї гравця (в пікселях)
-    // Віднімаємо 1 піксель від правого та нижнього краю. Чому?
-    // Якщо гравець стоїть рівно на координаті 64 (початок 3-го тайлу), 
-    // його ширина 32. 64 + 32 = 96 (це вже початок 4-го тайлу). 
-    // Без -1 він би чіпляв сусідній порожній тайл і "застрягав" би в повітрі.
+  
     int leftTile = p->x / TILE_SIZE;
     int rightTile = (p->x + p->width - 1) / TILE_SIZE;
     int topTile = p->y / TILE_SIZE;
     int bottomTile = (p->y + p->height - 1) / TILE_SIZE;
 
-    // Проходимось по всіх тайлах, які зараз перекриває гравець
     for (int y = topTile; y <= bottomTile; y++) {
         for (int x = leftTile; x <= rightTile; x++) {
-            // Захист від виходу за межі масиву (щоб гра не крашнулася)
             if (x >= 0 && x < LEVEL_COLS && y >= 0 && y < LEVEL_ROWS) {
-                if (level->map[y][x] == 1) { // Якщо знайшли стіну
-                    return 1; // Є колізія!
-                }
+                if (level->map[y][x] == 1)  
+                    return 1; 
             }
         }
     }
-    return 0; // Колізій немає
+    return 0; 
 }
 
 void checkCoinCollision(App *app, Player *player, Level *level) {
-    // Розраховуємо координати центру гравця
+ 
     int centerX = (player->x + TILE_SIZE / 2) / TILE_SIZE;
     int centerY = (player->y + TILE_SIZE / 2) / TILE_SIZE;
-
     if (centerX >= 0 && centerX < LEVEL_COLS && centerY >= 0 && centerY < LEVEL_ROWS) {
         if (level->map[centerY][centerX] == 4) {
-            level->map[centerY][centerX] = 0; // Видаляемо монету з мапи
-            player->coins++;                  // Збільшуємо рахунок монет
-            printf("Монет зібрано: %d\n", player->coins);
-            if (app->coinSound) {
+            level->map[centerY][centerX] = 0; 
+            player->coins++;                 
+            printf("Coins collected: %d\n", player->coins);
+            if (app->coinSound) 
                 Mix_PlayChannel(-1, app->coinSound, 0);
-            }
         }
     }
 }
@@ -65,24 +54,20 @@ int checkWin(Player *p, Level *level) {
     for (int y = topTile; y <= bottomTile; y++) {
         for (int x = leftTile; x <= rightTile; x++) {
             if (x >= 0 && x < LEVEL_COLS && y >= 0 && y < LEVEL_ROWS) {
-                if (level->map[y][x] == 3) { // Фініш!
+                if (level->map[y][x] == 3)  
                     return 1;
-                }
             }
         }
     }
     return 0;
 }
 
-// Повертає 1, якщо гравець помер, і 0, якщо живий
 int checkDeath(Player *p, Level *level) {
-    // 1. Перевірка вильоту за межі екрану (у відкритий космос)
-    if (p->x < 0 || p->x + p->width > LEVEL_COLS * TILE_SIZE ||
-        p->y < 0 || p->y + p->height > LEVEL_ROWS * TILE_SIZE) {
-        return 1;
-    }
 
-    // 2. Перевірка дотику до шипів (Тайл 2)
+    if (p->x < 0 || p->x + p->width > LEVEL_COLS * TILE_SIZE ||
+        p->y < 0 || p->y + p->height > LEVEL_ROWS * TILE_SIZE)
+        return 1;
+   
     int leftTile = p->x / TILE_SIZE;
     int rightTile = (p->x + p->width - 1) / TILE_SIZE;
     int topTile = p->y / TILE_SIZE;
@@ -91,9 +76,8 @@ int checkDeath(Player *p, Level *level) {
     for (int y = topTile; y <= bottomTile; y++) {
         for (int x = leftTile; x <= rightTile; x++) {
             if (x >= 0 && x < LEVEL_COLS && y >= 0 && y < LEVEL_ROWS) {
-                if (level->map[y][x] == 2) { // Торкнулися шипа!
+                if (level->map[y][x] == 2) 
                     return 1;
-                }
             }
         }
     }
@@ -107,11 +91,9 @@ void updatePlayer(Player *p, Level *level, App *app) {
     float maxFallSpeed = 12.0f; 
     float walkSpeed = 6.0f;    
 
-    
     Uint32 currentTime = SDL_GetTicks();
-    Uint32 spawnDelay = 1000; // Задержка в миллисекундах (1000 = 1 секунда). Можешь поставить 500.
+    Uint32 spawnDelay = 1000; 
 
-    // Разрешаем менять гравитацию ТОЛЬКО если прошла 1 секунда после старта уровня
     if (currentTime - p->spawnTime >= spawnDelay) {
         if (keys[SDL_SCANCODE_UP])    p->gravDir = GRAV_UP;
         if (keys[SDL_SCANCODE_DOWN])  p->gravDir = GRAV_DOWN;
@@ -126,11 +108,13 @@ void updatePlayer(Player *p, Level *level, App *app) {
         if (p->gravDir == GRAV_DOWN) {
             p->dy += gravity;
             if (p->dy > maxFallSpeed) p->dy = maxFallSpeed;
-        } else {
+        } 
+        else {
             p->dy -= gravity;
             if (p->dy < -maxFallSpeed) p->dy = -maxFallSpeed;
         }
-    } else {
+    } 
+    else {
         p->dy = 0.0f;
         if (keys[SDL_SCANCODE_W]) p->dy = -walkSpeed;
         if (keys[SDL_SCANCODE_S]) p->dy = walkSpeed;
@@ -138,7 +122,8 @@ void updatePlayer(Player *p, Level *level, App *app) {
         if (p->gravDir == GRAV_RIGHT) {
             p->dx += gravity;
             if (p->dx > maxFallSpeed) p->dx = maxFallSpeed;
-        } else {
+        } 
+        else {
             p->dx -= gravity;
             if (p->dx < -maxFallSpeed) p->dx = -maxFallSpeed;
         }
@@ -146,72 +131,62 @@ void updatePlayer(Player *p, Level *level, App *app) {
     p->x += p->dx; 
     checkCoinCollision(app, p, level);
     if (checkCollision(p, level)) {
-        // Якщо врізалися - відштовхуємось назад
-        if (p->dx > 0) { // Рухались вправо
-            // Ставимо гравця впритул до лівого краю тайлу, в який врізалися
+        if (p->dx > 0) {
             p->x = ((int)(p->x + p->width) / TILE_SIZE) * TILE_SIZE - p->width;
-        } else if (p->dx < 0) { // Рухались вліво
-            // Ставимо впритул до правого краю тайлу
+        } 
+        else if (p->dx < 0)  
             p->x = ((int)p->x / TILE_SIZE + 1) * TILE_SIZE;
-        }
-        p->dx = 0.0f; // Зупиняємо швидкість по X
+        
+        p->dx = 0.0f; 
     }
 
-    // --- 4. РУХ ПО Y ТА КОЛІЗІЯ ---
     p->y += p->dy;
     if (checkCollision(p, level)) {
-        if (p->dy > 0) { // Падали вниз
+        if (p->dy > 0) 
             p->y = ((int)(p->y + p->height) / TILE_SIZE) * TILE_SIZE - p->height;
-        } else if (p->dy < 0) { // Падали вгору (на стелю)
+         
+        else if (p->dy < 0) 
             p->y = ((int)p->y / TILE_SIZE + 1) * TILE_SIZE;
-        }
-        p->dy = 0.0f; // Зупиняємо швидкість по Y
+      
+        p->dy = 0.0f;
     }
 
-    // --- 5. ПЕРЕВІРКА СМЕРТІ ---
     if (checkDeath(p, level)) {
         app->deathCount++;
-        Mix_HaltMusic(); // <--- ДОБАВЛЕНО: Вырубаем музыку при смерти!
-        // Плюсуємо смерть
-        printf("[СТАТИСТИКА] Упс! Гравітація перемогла. Смертей за гру: %d\n", app->deathCount);
+        Mix_HaltMusic(); 
+        printf("[STATISTICS] Oops! Gravity won. Deaths per game: %d\n", app->deathCount);
         app->state = STATE_GAMEOVER;
         app->gameOverAlpha = 0;
     }
-    // --- 6. ПЕРЕВІРКА ПЕРЕМОГИ ---
     if (checkWin(p, level)) {
-        app->currentLevel++; // Збільшуємо номер рівня
-        
-        // ПЕРЕВІРКА НА ФІНАЛ ГРИ
+    
+        app->currentLevel++; 
         if (app->currentLevel > 3) {
-            // ЗБЕРІГАЄМО ЧАС У СТРУКТУРУ APP:
+
             app->finalTime = (SDL_GetTicks() - app->gameStartTime) / 1000.0f;
             Mix_HaltMusic();
-            printf("[ФІНАЛ] Гру пройдено повністю!\n");
-            printf(" -> Загальний час: %.2f секунд\n", app->finalTime);
+            printf("[FINAL] The game is fully completed!\n");
+            printf("Total time: %.2f seconds\n", app->finalTime);
             
-            if (app->winSound) {
+            if (app->winSound) 
                 Mix_PlayChannel(-1, app->winSound, 0);
-            }
 
             app->state = STATE_VICTORY;
-        } else {
-            // Інакше — просто завантажуємо наступний рівень 
-            printf("Рівень пройдено! Переходимо на рівень %d\n", app->currentLevel);
+        } 
+        else {
+            
+            printf("Level completed! Let`s move on to the next level %d\n", app->currentLevel);
             initLevel(level, app->currentLevel);
             initPlayer(p, level->spawnX, level->spawnY);  
             p->coinsAtLevelStart = p->coins;
             initPlayer(p, level->spawnX, level->spawnY); 
-            
-            
+             
                  if (app->currentLevel == 2 && app->level2Music) 
                      Mix_PlayMusic(app->level2Music, -1);
             
                  else if (app->currentLevel == 3 && app->level3Music) 
                      Mix_PlayMusic(app->level3Music, -1);
             
-            
-            // ВАЖЛИВО: Ми більше НЕ скидаємо app->deathCount 
-            // і НЕ оновлюємо таймер! Час продовжує йти.
         }
     }
 }

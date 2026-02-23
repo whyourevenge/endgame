@@ -24,29 +24,23 @@ extern GameState currentState;
 extern GameState previousState;
 
 typedef struct {
-    SDL_Window		*window;
-    SDL_Renderer	*renderer;
-    bool		    isRunning;
+    SDL_Window	    *window;
+    SDL_Renderer    *renderer;
+    bool            isRunning;
     bool            mouseReleased;
     GameState       state;
     int             currentLevel;
     int             gameOverAlpha;
-    int             deathCount;
-  
+    int             deathCount; 
     Uint32          gameStartTime;
-  
     Mix_Music       *menuMusic;
     Mix_Chunk       *winSound;
     Mix_Chunk       *coinSound;
-    
-    
     Mix_Music       *level1Music;
     Mix_Music       *level2Music;
     Mix_Music       *level3Music;
-
-    float           finalTime;     // Щоб зберегти фінальний час
-    TTF_Font        *font;         // Наш шрифт
-
+    float           finalTime;     
+    TTF_Font        *font;        
     SDL_Texture     *victoryBg;
 } App;
 
