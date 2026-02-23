@@ -69,10 +69,27 @@ bool initApp(App *app) {
         
     }
 
+    app->menuBg = IMG_LoadTexture(app->renderer, "resource/images/menu_bg.png"); 
+    if (!app->menuBg) {
+        printf("Warning: Failed to load menu background: %s\n", IMG_GetError());
+    }
+
     app->victoryBg = IMG_LoadTexture(app->renderer, "resource/images/victory_bg.png");
     if (!app->victoryBg) 
         printf("Failed to load victory background: %s\n", IMG_GetError());
-   
+    
+    app->playButton = IMG_LoadTexture(app->renderer, "resource/images/play-button.png");
+    if (!app->playButton) 
+        printf("Failed to load play button: %s\n", IMG_GetError());
+
+    app->settingsButton = IMG_LoadTexture(app->renderer, "resource/images/settings-button.png");
+    if (!app->settingsButton) 
+        printf("Failed to load play button: %s\n", IMG_GetError());
+        
+    app->exitButton = IMG_LoadTexture(app->renderer, "resource/images/exit-button.png");
+    if (!app->exitButton) 
+        printf("Failed to load play button: %s\n", IMG_GetError());
+
     if (TTF_Init() == -1) {
         printf("Initialization error SDL_ttf: %s\n", TTF_GetError());
         return false;
@@ -143,8 +160,23 @@ void handleEvents(App *app) {
 }
 
 void cleanupApp(App *app) {
+    if (app->menuBg) 
+        SDL_DestroyTexture(app->menuBg);
+
     if (app->victoryBg) 
         SDL_DestroyTexture(app->victoryBg);
+
+    if (app->playButton) 
+        SDL_DestroyTexture(app->playButton);
+        
+    if (app->settingsButton) 
+        SDL_DestroyTexture(app->settingsButton);
+
+    if (app->exitButton) 
+        SDL_DestroyTexture(app->exitButton);
+
+    if (app->playButton) 
+        SDL_DestroyTexture(app->playButton);
     
     if (app->menuMusic) 
         Mix_FreeMusic(app->menuMusic);
