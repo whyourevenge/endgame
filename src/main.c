@@ -265,12 +265,12 @@ int main(void) {
                 break;
             case STATE_GAMEOVER:
                 player.coins = player.coinsAtLevelStart;
-                updateGameOver(&app, &level,&player, app.currentLevel, app.renderer);
+                updateGameOver(&app, &level, &player, app.currentLevel, app.renderer);
                 if (app.gameOverAlpha < 150) 
                     app.gameOverAlpha += 5;
                 break;
             case STATE_SETTINGS:
-                update_settings(&app);
+                updateSettings(&app);
                 if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) 
                     app.state = STATE_MENU;
                 break;
@@ -313,7 +313,7 @@ int main(void) {
                     renderGameOver(&app);
                 break;
             case STATE_SETTINGS:
-                render_settings(&app);
+                renderSettings(&app);
                 break;
             case STATE_VICTORY:
                 if (app.victoryBg != NULL) 
@@ -357,7 +357,6 @@ int main(void) {
                     SDL_FreeSurface(surf2);
                     SDL_DestroyTexture(tex2);
                 }
-                
                 break;
         }
 

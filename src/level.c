@@ -12,16 +12,13 @@ void loadLevelFromFile(Level *level, const char *filename) {
     char line[1024]; 
     int row = 0;
 
-    // Read the file line by line until the end of the file or the maximum number of rows is reached
     while (fgets(line, sizeof(line), file) && row < LEVEL_ROWS) {
         int col = 0;
         char *token = strtok(line, ",");
         
         while (token != NULL && col < LEVEL_COLS) {
-            // Convert the extracted string token into an integer tile value
             int tileValue = atoi(token);
             
-            // If the tile is a spawn point, set the player's starting coordinates and leave the map tile empty
             if (tileValue == TILE_SPAWN) {
                 level->spawnX = col * (float)TILE_SIZE;
                 level->spawnY = row * (float)TILE_SIZE;
@@ -29,7 +26,6 @@ void loadLevelFromFile(Level *level, const char *filename) {
             } else {
                 level->map[row][col] = tileValue; 
             }
-            // Assign the parsed tile value to the corresponding map grid position
             token = strtok(NULL, ",");
             col++;
         }
@@ -53,7 +49,6 @@ void renderLevel(Level *level, SDL_Renderer *renderer) {
 
             if (tile == TILE_EMPTY) continue;
             
-            // Calculate the exact screen coordinates and dimensions for the current tile bounding box
             SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
             
             switch (tile) {

@@ -160,7 +160,7 @@ void renderPauseMenu(App *app) {
     SDL_RenderFillRect(app->renderer, &btnPauseExit);
 }
 
-void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL_Renderer *renderer) {
+void updateGameOver(App *app, Level *level, Player *player, int currentLevel, SDL_Renderer *renderer) {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
@@ -178,7 +178,7 @@ void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL
     SDL_Rect btnQuit = { centerX, 340, btnW, btnH };
     if (keys[SDL_SCANCODE_RETURN] || (isLeftClicked && isMouseInside(mouseX, mouseY, btnRestart))) {
         initPlayer(player, level->spawnX, level->spawnY);
-        initLevel(level, CurrentLevel);
+        initLevel(level, currentLevel);
         renderLevel(level, renderer);
         app->state = STATE_PLAY;
 
