@@ -61,6 +61,8 @@ typedef struct {
     SDL_Texture     *settingsButton;
     SDL_Texture     *exitButton;
     SDL_Texture     *backButton;
+    SDL_Texture     *resumeButton;
+    SDL_Texture     *retryButton;
 } App;
 
 bool initApp(App *app);

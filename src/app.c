@@ -93,6 +93,15 @@ bool initApp(App *app) {
     app->backButton = IMG_LoadTexture(app->renderer, "resource/images/back-button.png");
     if (!app->backButton) 
         printf("Failed to load back button: %s\n", IMG_GetError());
+        
+        
+    app->resumeButton = IMG_LoadTexture(app->renderer, "resource/images/resume-button.png");
+    if (!app->resumeButton) 
+        printf("Failed to load resume button: %s\n", IMG_GetError());
+
+    app->retryButton = IMG_LoadTexture(app->renderer, "resource/images/retry-button.png");
+    if (!app->retryButton) 
+        printf("Failed to load retry button: %s\n", IMG_GetError());
 
     if (TTF_Init() == -1) {
         printf("Initialization error SDL_ttf: %s\n", TTF_GetError());
@@ -177,6 +186,12 @@ void cleanupApp(App *app) {
 
     if (app->backButton) 
         SDL_DestroyTexture(app->backButton);
+        
+    if (app->resumeButton)
+        SDL_DestroyTexture(app->resumeButton);
+        
+    if (app->retryButton)
+        SDL_DestroyTexture(app->retryButton);
     
     if (app->menuMusic) 
         Mix_FreeMusic(app->menuMusic);
