@@ -1,50 +1,50 @@
 #include "endgame.h"
 #include "menu.h"
 
-void toggleSound(App *app) {
-    if (app->volume > 0)
-        app->volume = 0;
+void toggleSound(Game *game) {
+    if (game->volume > 0)
+        game->volume = 0;
     else
-        app->volume = 64;
-    Mix_VolumeMusic(app->volume);
+        game->volume = 64;
+    Mix_VolumeMusic(game->volume);
 }
 
 int isClicked(int mx, int my, SDL_Rect r) {
     return (mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h);
 }
 
-void updateSettings(App *app) {
+void updateSettings(Game *game) {
     int mx, my;
     SDL_Rect backBtn = { 540, 500, 200, 60 };
 
     if (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         if (isClicked(mx, my, backBtn)) {
-            app->state = previousState;
-            app->mouseReleased = false;
+            game->state = previousState;
+            game->mouseReleased = false;
         }
     }
 }
 
-void renderSettings(App *app) {
+void renderSettings(Game *game) {
     int mx, my;
     SDL_GetMouseState(&mx, &my);
     SDL_Rect backBtn = { 540, 500, 200, 60 };
     bool hovered = isClicked(mx, my, backBtn);
 
-    if (app->settingsBg) {
-        SDL_RenderCopy(app->renderer, app->settingsBg, NULL, NULL);
+    if (game->settingsBg) {
+        SDL_RenderCopy(game->renderer, game->settingsBg, NULL, NULL);
     } else {
-        SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
-        SDL_RenderClear(app->renderer);
+        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
+        SDL_RenderClear(game->renderer);
     }
 
-    if (app->backButton) {
-        SDL_SetTextureColorMod(app->backButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
-        SDL_RenderCopy(app->renderer, app->backButton, NULL, &backBtn);
+    if (game->backButton) {
+        SDL_SetTextureColorMod(game->backButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(game->renderer, game->backButton, NULL, &backBtn);
     } else {
-        SDL_SetRenderDrawColor(app->renderer, 150 + (hovered ? 50 : 0), 150, 150, 255);
-        SDL_RenderFillRect(app->renderer, &backBtn);
+        SDL_SetRenderDrawColor(game->renderer, 150 + (hovered ? 50 : 0), 150, 150, 255);
+        SDL_RenderFillRect(game->renderer, &backBtn);
     }
 
-    drawText(app, "SETTINGS", 540, 90);
+    drawText(game, "SETTINGS", 540, 90);
 }

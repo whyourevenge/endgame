@@ -5,19 +5,19 @@
 #include "player.h"
 #include "level.h"
 
-void updateMenu(App *app, Player *player);
-void renderMenu(App *app);
+void updateMenu(Game *game, Player *player);
+void renderMenu(Game *game);
 
-void updatePauseMenu(App *app, Level *level, Player *player);
-void renderPauseMenu(App *app);
+void updatePauseMenu(Game *game, Level *level, Player *player);
+void renderPauseMenu(Game *game);
 
-void updateGameOver(App *app, Level *level, Player *player, int currentLevel, SDL_Renderer *renderer);
-void renderGameOver(App *app);
+void updateGameOver(Game *game, Level *level, Player *player, int currentLevel, SDL_Renderer *renderer);
+void renderGameOver(Game *game);
 
-void updateSettings(App *app);
-void renderSettings(App *app);
-void toggleSound(App *app);
+void updateSettings(Game *game);
+void renderSettings(Game *game);
+void toggleSound(Game *game);
 
-void drawText(App *app, const char *msg, int x, int y);
+void drawText(Game *game, const char *msg, int x, int y);
 
 #endif

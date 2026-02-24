@@ -16,7 +16,7 @@
 # Executables
 *.out
 *.exe
-*.app
+*.game
 # IMPORTANT: Uncomment the line below and enter the name of your executable, 
 # if you are compiling directly into the project root (e.g., game)
 # game

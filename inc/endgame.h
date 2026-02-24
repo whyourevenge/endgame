@@ -63,10 +63,10 @@ typedef struct {
     SDL_Texture     *backButton;
     SDL_Texture     *resumeButton;
     SDL_Texture     *retryButton;
-} App;
+} Game;
 
-bool initApp(App *app);
-void handleEvents(App *app);
-void cleanupApp(App *app);
+bool initGame(Game *game);
+void handleEvents(Game *game);
+void cleanupGame(Game *game);
 
 #endif

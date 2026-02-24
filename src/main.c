@@ -5,18 +5,18 @@
 #include "utilities.h"
 
 int main(void) {
-    App app = {0};
+    Game game = {0};
 
-    if (!initApp(&app)) 
+    if (!initGame(&game)) 
         return 1;
     
-    app.state = STATE_MENU;
-    app.currentLevel = 1;
+    game.state = STATE_MENU;
+    game.currentLevel = 1;
 
     Player player = {0};
     Level level = {0};
 
-    initLevel(&level, app.currentLevel);
+    initLevel(&level, game.currentLevel);
     initPlayer(&player, level.spawnX, level.spawnY);
 
     const int FPS = 60;
@@ -24,88 +24,88 @@ int main(void) {
     Uint32 frameStart;
     int frameTime;
 
-    while (app.isRunning) {
+    while (game.isRunning) {
         frameStart = SDL_GetTicks();
         
-        handleEvents(&app);
+        handleEvents(&game);
 
-        switch (app.state) {
+        switch (game.state) {
             case STATE_MENU:
-                updateMenu(&app, &player);
+                updateMenu(&game, &player);
                 break;
             case STATE_PLAY:
-                updatePlayer(&player, &level, &app); 
+                updatePlayer(&player, &level, &game); 
                 break;
             case STATE_PAUSE:
-                updatePauseMenu(&app, &level, &player);
+                updatePauseMenu(&game, &level, &player);
                 break;
             case STATE_GAMEOVER:
                 player.coins = player.coinsAtLevelStart;
-                updateGameOver(&app, &level, &player, app.currentLevel, app.renderer);
-                if (app.gameOverAlpha < 150) 
-                    app.gameOverAlpha += 5;
+                updateGameOver(&game, &level, &player, game.currentLevel, game.renderer);
+                if (game.gameOverAlpha < 150) 
+                    game.gameOverAlpha += 5;
                 break;
             case STATE_SETTINGS:
-                updateSettings(&app);
+                updateSettings(&game);
                 if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) 
-                    app.state = STATE_MENU;
+                    game.state = STATE_MENU;
                 break;
             case STATE_VICTORY:
                 if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_RETURN] || 
                     SDL_GetKeyboardState(NULL)[SDL_SCANCODE_ESCAPE]) {
-                    resetGame(&app, &level, &player);
-                    app.state = STATE_MENU;
-                    Mix_PlayMusic(app.menuMusic, -1);
+                    resetGame(&game, &level, &player);
+                    game.state = STATE_MENU;
+                    Mix_PlayMusic(game.menuMusic, -1);
                 }
                 break;
         }
 
-        SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
-        SDL_RenderClear(app.renderer);
+        SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 255);
+        SDL_RenderClear(game.renderer);
 
-        switch (app.state) {
+        switch (game.state) {
             case STATE_MENU:
-                renderMenu(&app);
+                renderMenu(&game);
                 break;
             case STATE_PLAY:
-                renderLevel(&level, app.renderer);
-                renderPlayer(&player, app.renderer);
+                renderLevel(&level, game.renderer);
+                renderPlayer(&player, game.renderer);
                 break;
             case STATE_PAUSE:
-                renderLevel(&level, app.renderer);
-                renderPlayer(&player, app.renderer);
-                SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 150); 
+                renderLevel(&level, game.renderer);
+                renderPlayer(&player, game.renderer);
+                SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 150); 
                 SDL_Rect overlay = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-                SDL_RenderFillRect(app.renderer, &overlay);
-                renderPauseMenu(&app); 
+                SDL_RenderFillRect(game.renderer, &overlay);
+                renderPauseMenu(&game); 
                 break;
             case STATE_GAMEOVER:
-                renderLevel(&level, app.renderer);
-                renderPlayer(&player, app.renderer);
-                SDL_SetRenderDrawColor(app.renderer, 100, 0, 0, app.gameOverAlpha); 
+                renderLevel(&level, game.renderer);
+                renderPlayer(&player, game.renderer);
+                SDL_SetRenderDrawColor(game.renderer, 100, 0, 0, game.gameOverAlpha); 
                 SDL_Rect fullScreen = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-                SDL_RenderFillRect(app.renderer, &fullScreen);
-                if (app.gameOverAlpha >= 150) 
-                    renderGameOver(&app);
+                SDL_RenderFillRect(game.renderer, &fullScreen);
+                if (game.gameOverAlpha >= 150) 
+                    renderGameOver(&game);
                 break;
             case STATE_SETTINGS:
-                renderSettings(&app);
+                renderSettings(&game);
                 break;
             case STATE_VICTORY:
-                if (app.victoryBg != NULL) 
-                    SDL_RenderCopy(app.renderer, app.victoryBg, NULL, NULL);
+                if (game.victoryBg != NULL) 
+                    SDL_RenderCopy(game.renderer, game.victoryBg, NULL, NULL);
                 else {
-                    SDL_SetRenderDrawColor(app.renderer, 255, 215, 0, 255);
-                    SDL_RenderClear(app.renderer);
+                    SDL_SetRenderDrawColor(game.renderer, 255, 215, 0, 255);
+                    SDL_RenderClear(game.renderer);
                 }
 
-                if (app.font != NULL) {
+                if (game.font != NULL) {
                     char timeText[128];
-                    sprintf(timeText, "VICTORY! Time: %.2f sec | Deaths: %d", app.finalTime, app.deathCount);
+                    sprintf(timeText, "VICTORY! Time: %.2f sec | Deaths: %d", game.finalTime, game.deathCount);
 
                     SDL_Color whiteColor = {255, 255, 255, 255}; 
-                    SDL_Surface *surf1 = TTF_RenderUTF8_Blended(app.font, timeText, whiteColor);
-                    SDL_Texture *tex1 = SDL_CreateTextureFromSurface(app.renderer, surf1);
+                    SDL_Surface *surf1 = TTF_RenderUTF8_Blended(game.font, timeText, whiteColor);
+                    SDL_Texture *tex1 = SDL_CreateTextureFromSurface(game.renderer, surf1);
 
                     SDL_Rect rect1 = { 
                         (WINDOW_WIDTH - surf1->w) / 2, 
@@ -113,12 +113,12 @@ int main(void) {
                         surf1->w, 
                         surf1->h 
                     };
-                    SDL_RenderCopy(app.renderer, tex1, NULL, &rect1);
+                    SDL_RenderCopy(game.renderer, tex1, NULL, &rect1);
 
                     const char *hintText = "Press [ENTER] to return to Main Menu";
                     SDL_Color grayColor = {200, 200, 200, 255}; 
-                    SDL_Surface *surf2 = TTF_RenderUTF8_Blended(app.font, hintText, grayColor);
-                    SDL_Texture *tex2 = SDL_CreateTextureFromSurface(app.renderer, surf2);
+                    SDL_Surface *surf2 = TTF_RenderUTF8_Blended(game.font, hintText, grayColor);
+                    SDL_Texture *tex2 = SDL_CreateTextureFromSurface(game.renderer, surf2);
 
                     SDL_Rect rect2 = { 
                         (WINDOW_WIDTH - surf2->w) / 2, 
@@ -126,7 +126,7 @@ int main(void) {
                         surf2->w, 
                         surf2->h 
                     };
-                    SDL_RenderCopy(app.renderer, tex2, NULL, &rect2);
+                    SDL_RenderCopy(game.renderer, tex2, NULL, &rect2);
 
                     SDL_FreeSurface(surf1);
                     SDL_DestroyTexture(tex1);
@@ -136,13 +136,13 @@ int main(void) {
                 break;
         }
 
-        SDL_RenderPresent(app.renderer);
+        SDL_RenderPresent(game.renderer);
 
         frameTime = SDL_GetTicks() - frameStart;
         if (frameDelay > frameTime) 
             SDL_Delay(frameDelay - frameTime);
     }
 
-    cleanupApp(&app);
+    cleanupGame(&game);
     return 0;
 }
