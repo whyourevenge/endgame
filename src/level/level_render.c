@@ -4,24 +4,28 @@ static void drawWall(Level *level, SDL_Renderer *renderer, int x, int y) {
     SDL_Rect rect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
     SDL_RenderFillRect(renderer, &rect);
+    (void)level;
 }
 
 static void drawDanger(Level *level, SDL_Renderer *renderer, int x, int y) {
     SDL_Rect rect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
     SDL_SetRenderDrawColor(renderer, 255, 100, 0, 255);
     SDL_RenderFillRect(renderer, &rect);
+    (void)level;
 }
 
 static void drawFinish(Level *level, SDL_Renderer *renderer, int x, int y) {
     SDL_Rect rect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
     SDL_SetRenderDrawColor(renderer, 50, 150, 255, 255);
     SDL_RenderFillRect(renderer, &rect);
+    (void)level;
 }
 
 static void drawCoin(Level *level, SDL_Renderer *renderer, int x, int y) {
     SDL_Rect rect = { x * TILE_SIZE + 8, y * TILE_SIZE + 8, TILE_SIZE - 16, TILE_SIZE - 16 };
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
     SDL_RenderFillRect(renderer, &rect);
+    (void)level;
 }
 
 void renderLevel(Level *level, SDL_Renderer *renderer) {
