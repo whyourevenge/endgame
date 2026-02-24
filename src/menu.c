@@ -39,6 +39,7 @@ void updateMenu(App *app, Player *player) {
         
         else if (isMouseInside(mx, my, btnSettings)) {
             app->mouseReleased = false;
+            previousState = app->state;
             app->state = STATE_SETTINGS;
         }
         else if (isMouseInside(mx, my, btnExit)) 
@@ -124,6 +125,7 @@ void updatePauseMenu(App *app, Level *level, Player *player) {
         }
         else if (isMouseInside(mouseX, mouseY, btnPauseSettings)) {
             app->mouseReleased = false;
+            previousState = app->state;
             app->state = STATE_SETTINGS;
         }
         else if (isMouseInside(mouseX, mouseY, btnPauseExit)) {

@@ -19,7 +19,7 @@ void updateSettings(App *app) {
 
     if (SDL_GetMouseState(&mx, &my) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         if (isClicked(mx, my, backBtn)) {
-            app->state = STATE_MENU;
+            app->state = previousState;
             app->mouseReleased = false;
         }
     }
