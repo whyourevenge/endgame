@@ -30,14 +30,13 @@ void render_settings(App *app) {
         SDL_RenderClear(app->renderer);
     }
 
-    if (app->exitButton) {
-        SDL_SetTextureColorMod(app->exitButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
-        SDL_RenderCopy(app->renderer, app->exitButton, NULL, &back_btn);
+    if (app->backButton) {
+        SDL_SetTextureColorMod(app->backButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->backButton, NULL, &back_btn);
     } else {
         SDL_SetRenderDrawColor(app->renderer, 150 + (hovered ? 50 : 0), 150, 150, 255);
         SDL_RenderFillRect(app->renderer, &back_btn);
     }
 
-    draw_text(app, "SETTINGS", 540, 100);
-    draw_text(app, "BACK TO MENU", 550, 515);
+    draw_text(app, "SETTINGS", 540, 90);
 }

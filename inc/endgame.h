@@ -60,6 +60,7 @@ typedef struct {
     SDL_Texture     *playButton;
     SDL_Texture     *settingsButton;
     SDL_Texture     *exitButton;
+    SDL_Texture     *backButton;
 } App;
 
 #endif

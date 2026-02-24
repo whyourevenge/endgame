@@ -95,6 +95,10 @@ bool initApp(App *app) {
     if (!app->exitButton) 
         printf("Failed to load play button: %s\n", IMG_GetError());
 
+    app->backButton = IMG_LoadTexture(app->renderer, "resource/images/back-button.png");
+    if (!app->backButton) 
+        printf("Failed to load play button: %s\n", IMG_GetError());
+
     if (TTF_Init() == -1) {
         printf("Initialization error SDL_ttf: %s\n", TTF_GetError());
         return false;
