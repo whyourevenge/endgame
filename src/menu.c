@@ -188,6 +188,7 @@ void updateGameOver(App *app, Level *level, Player *player, int currentLevel, SD
         initPlayer(player, level->spawnX, level->spawnY);
         initLevel(level, currentLevel);
         renderLevel(level, renderer);
+        Mix_HaltChannel(-1);
         app->state = STATE_PLAY;
 
         app->gameStartTime = SDL_GetTicks();
@@ -199,6 +200,7 @@ void updateGameOver(App *app, Level *level, Player *player, int currentLevel, SD
     if ((keys[SDL_SCANCODE_ESCAPE] || (isLeftClicked && isMouseInside(mouseX, mouseY, btnQuit))) && app->mouseReleased) {
         app->mouseReleased = false;
         initPlayer(player, level->spawnX, level->spawnY);
+        Mix_HaltChannel(-1);
         app->state = STATE_MENU;
         resetGame(app, level, player);
         Mix_PlayMusic(app->menuMusic, -1);

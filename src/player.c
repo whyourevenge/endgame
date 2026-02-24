@@ -154,6 +154,7 @@ void updatePlayer(Player *p, Level *level, App *app) {
     if (checkDeath(p, level)) {
         app->deathCount++;
         Mix_HaltMusic(); 
+        Mix_PlayChannel(-1, app->gameOverSound, 0);
         printf("[STATISTICS] Oops! Gravity won. Deaths per game: %d\n", app->deathCount);
         app->state = STATE_GAMEOVER;
         app->gameOverAlpha = 0;

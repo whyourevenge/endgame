@@ -62,6 +62,11 @@ bool initApp(App *app) {
         Mix_VolumeChunk(app->coinSound, 24);
         if (!app->coinSound) 
             printf("Failed to load coin pickup sound: %s\n", Mix_GetError());
+
+        app->gameOverSound = Mix_LoadWAV("resource/audio/gameover.wav");
+        Mix_VolumeChunk(app->gameOverSound, 24);
+        if(!app->gameOverSound)
+            printf("Failed to load game over sound: %s\n", Mix_GetError());
     }
 
     app->menuBg = IMG_LoadTexture(app->renderer, "resource/images/menu_bg.png"); 
@@ -194,6 +199,9 @@ void cleanupApp(App *app) {
     
     if (app->coinSound) 
         Mix_FreeChunk(app->coinSound);
+
+    if (app->gameOverSound) 
+        Mix_FreeChunk(app->gameOverSound);
     
     if (app->level1Music) Mix_FreeMusic(app->level1Music);
     if (app->level2Music) Mix_FreeMusic(app->level2Music);

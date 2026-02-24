@@ -43,7 +43,7 @@ int main(void) {
                 player.coins = player.coinsAtLevelStart;
                 updateGameOver(&app, &level, &player, app.currentLevel, app.renderer);
                 if (app.gameOverAlpha < 150) 
-                    app.gameOverAlpha += 5;
+                    app.gameOverAlpha += 3;
                 break;
             case STATE_SETTINGS:
                 updateSettings(&app);

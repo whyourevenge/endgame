@@ -42,6 +42,7 @@ typedef struct {
 
     Mix_Chunk       *winSound;
     Mix_Chunk       *coinSound;
+    Mix_Chunk       *gameOverSound;
 
     Mix_Music       *level1Music;
     Mix_Music       *level2Music;
