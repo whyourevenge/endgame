@@ -190,7 +190,7 @@ void updateGameOver(Game *game, Level *level, Player *player, int currentLevel, 
         renderLevel(level, renderer);
         game->state = STATE_PLAY;
 
-        game->gameStartTime = SDL_GetTicks();
+
         
         if (game->currentLevel == 1 && game->level1Music) Mix_PlayMusic(game->level1Music, -1);
         else if (game->currentLevel == 2 && game->level2Music) Mix_PlayMusic(game->level2Music, -1);
