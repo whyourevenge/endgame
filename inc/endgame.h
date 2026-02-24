@@ -63,4 +63,8 @@ typedef struct {
     SDL_Texture     *backButton;
 } App;
 
+bool initApp(App *app);
+void handleEvents(App *app);
+void cleanupApp(App *app);
+
 #endif
