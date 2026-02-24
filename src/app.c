@@ -147,14 +147,7 @@ void handleEvents(App *app) {
                 if (key == SDLK_ESCAPE) 
                     app->state = previousState;
             }
-            else if (app->state == STATE_GAMEOVER) {
-                if (key == SDLK_KP_ENTER) 
-                    app->state = STATE_PLAY;
-                else if (key == SDLK_ESCAPE) {
-                    app->state = STATE_MENU;
-                    previousState = app->state; 
-                }
-            }
+           
             else if (app->state == STATE_VICTORY) {
                 if (key == SDLK_KP_ENTER) {
                     app->state = STATE_MENU;
