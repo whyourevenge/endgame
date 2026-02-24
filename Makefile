@@ -8,8 +8,8 @@ SRC_DIR     = src
 INC_DIR     = inc
 OBJ_DIR     = obj
 
-SRC         = $(wildcard $(SRC_DIR)/*.c)
-OBJ         = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+SRC         = $(shell find $(SRC_DIR) -name "*.c")
+OBJ         = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
 
 all: $(NAME)
 
@@ -17,11 +17,9 @@ $(NAME): $(OBJ)
 	@$(CC) $(OBJ) -o $@ $(LDFLAGS)
 	@printf "Project %s successfully built!\n" $(NAME)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) -c $< -o $@
-
-$(OBJ_DIR):
-	@mkdir $(OBJ_DIR)
 
 clean:
 	@rm -rf $(OBJ_DIR)

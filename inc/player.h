@@ -23,7 +23,7 @@ typedef struct {
 } Player;
 
 void initPlayer(Player *p, float spawnX, float spawnY);
-void updatePlayer(Player *p, Level *level, App *app);
+void updatePlayer(Player *p, Level *level, Game *game);
 void renderPlayer(Player *p, SDL_Renderer *renderer);
 
 #endif
