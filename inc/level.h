@@ -25,11 +25,6 @@ typedef struct {
     float spawnY;
 } Level;
 
-static void drawWall(Level *level, SDL_Renderer *renderer, int x, int y);
-static void drawDanger(Level *level, SDL_Renderer *renderer, int x, int y);
-static void drawFinish(Level *level, SDL_Renderer *renderer, int x, int y);
-static void drawCoin(Level *level, SDL_Renderer *renderer, int x, int y);
-
 void loadLevelFromFile(Level *level, const char *filename);
 void initLevel(Level *level, int levelNumber);
 
