@@ -39,6 +39,7 @@ void updateMenu(App *app, Player *player) {
         
         else if (isMouseInside(mx, my, btnSettings)) {
             app->mouseReleased = false;
+            previousState = app->state;
             app->state = STATE_SETTINGS;
         }
         else if (isMouseInside(mx, my, btnExit)) 
@@ -124,6 +125,7 @@ void updatePauseMenu(App *app, Level *level, Player *player) {
         }
         else if (isMouseInside(mouseX, mouseY, btnPauseSettings)) {
             app->mouseReleased = false;
+            previousState = app->state;
             app->state = STATE_SETTINGS;
         }
         else if (isMouseInside(mouseX, mouseY, btnPauseExit)) {
@@ -147,20 +149,26 @@ void renderPauseMenu(App *app) {
     SDL_Rect btnPauseSettings = { centerX, 350, btnW, btnH };
     SDL_Rect btnPauseExit     = { centerX, 450, btnW, btnH };
 
-    if (isMouseInside(mx, my, btnPauseResume)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnPauseResume);
+    if (app->resumeButton) {
+        bool hovered = isMouseInside(mx, my, btnPauseResume);
+        SDL_SetTextureColorMod(app->resumeButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->resumeButton, NULL, &btnPauseResume);
+    }
 
-    if (isMouseInside(mx, my, btnPauseSettings)) SDL_SetRenderDrawColor(app->renderer, 255, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 200, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnPauseSettings);
+    if (app->settingsButton) {
+        bool hovered = isMouseInside(mx, my, btnPauseSettings);
+        SDL_SetTextureColorMod(app->settingsButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->settingsButton, NULL, &btnPauseSettings);
+    }
 
-    if (isMouseInside(mx, my, btnPauseExit)) SDL_SetRenderDrawColor(app->renderer, 255, 100, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 200, 50, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnPauseExit);
+    if (app->exitButton) {
+        bool hovered = isMouseInside(mx, my, btnPauseExit);
+        SDL_SetTextureColorMod(app->exitButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->exitButton, NULL, &btnPauseExit);
+    }
 }
 
-void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL_Renderer *renderer) {
+void updateGameOver(App *app, Level *level, Player *player, int currentLevel, SDL_Renderer *renderer) {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
@@ -174,11 +182,11 @@ void updateGameOver(App *app, Level *level,Player *player, int CurrentLevel, SDL
     int btnH = 60;
     int centerX = (WINDOW_WIDTH - btnW) / 2;
 
-    SDL_Rect btnRestart = { centerX, 250, btnW, btnH };
-    SDL_Rect btnQuit = { centerX, 340, btnW, btnH };
+    SDL_Rect btnRestart = { centerX, 325, btnW, btnH };
+    SDL_Rect btnQuit = { centerX, 415, btnW, btnH };
     if (keys[SDL_SCANCODE_RETURN] || (isLeftClicked && isMouseInside(mouseX, mouseY, btnRestart))) {
         initPlayer(player, level->spawnX, level->spawnY);
-        initLevel(level, CurrentLevel);
+        initLevel(level, currentLevel);
         renderLevel(level, renderer);
         app->state = STATE_PLAY;
 
@@ -205,14 +213,18 @@ void renderGameOver(App *app) {
     int btnH = 60;
     int centerX = (WINDOW_WIDTH - btnW) / 2;
 
-    SDL_Rect btnRestart = { centerX, 250, btnW, btnH };
-    SDL_Rect btnQuit = { centerX, 340, btnW, btnH };
+    SDL_Rect btnRestart = { centerX, 325, btnW, btnH };
+    SDL_Rect btnQuit = { centerX, 415, btnW, btnH };
 
-    if (isMouseInside(mouseX, mouseY, btnRestart)) SDL_SetRenderDrawColor(app->renderer, 100, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 50, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnRestart);
+    if (app->retryButton) {
+        bool hovered = isMouseInside(mouseX, mouseY, btnRestart);
+        SDL_SetTextureColorMod(app->retryButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->retryButton, NULL, &btnRestart);
+    }
 
-    if (isMouseInside(mouseX, mouseY, btnQuit)) SDL_SetRenderDrawColor(app->renderer, 255, 255, 100, 255);
-    else SDL_SetRenderDrawColor(app->renderer, 200, 200, 50, 255);
-    SDL_RenderFillRect(app->renderer, &btnQuit);
+    if (app->exitButton) {
+        bool hovered = isMouseInside(mouseX, mouseY, btnQuit);
+        SDL_SetTextureColorMod(app->exitButton, hovered ? 255 : 200, hovered ? 255 : 200, hovered ? 255 : 200);
+        SDL_RenderCopy(app->renderer, app->exitButton, NULL, &btnQuit);
+    }
 }

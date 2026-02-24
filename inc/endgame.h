@@ -52,6 +52,7 @@ typedef struct {
     TTF_Font        *font;
 
     SDL_Texture     *menuBg;
+    SDL_Texture     *settingsBg;
     SDL_Texture     *victoryBg;
   
     int             volume;
@@ -59,6 +60,15 @@ typedef struct {
     SDL_Texture     *playButton;
     SDL_Texture     *settingsButton;
     SDL_Texture     *exitButton;
+    SDL_Texture     *backButton;
+    SDL_Texture     *resumeButton;
+    SDL_Texture     *retryButton;
+    SDL_Texture     *plusButton;
+    SDL_Texture     *minusButton;
 } App;
+
+bool initApp(App *app);
+void handleEvents(App *app);
+void cleanupApp(App *app);
 
 #endif

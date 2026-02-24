@@ -1,6 +1,6 @@
 #include "endgame.h"
 
-void draw_text(App *app, const char *msg, int x, int y) {
+void drawText(App *app, const char *msg, int x, int y) {
     SDL_Color color = {255, 255, 255, 255};
     SDL_Surface *surf;
     SDL_Texture *tex;
