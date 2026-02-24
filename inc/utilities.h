@@ -6,6 +6,6 @@
 #include "menu.h"
 #include "player.h"
 
-void resetGame(App *app, Level *level, Player *player);
+void resetGame(Game *game, Level *level, Player *player);
 
 #endif
